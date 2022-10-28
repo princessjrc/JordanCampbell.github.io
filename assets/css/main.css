@@ -3248,7 +3248,7 @@ input, select, textarea {
 				height: 100vh;
 			}
 
-		#wrapper.fade-in:before {
+		 /* #wrapper.fade-in:before {
 			pointer-events: none;
 			-moz-transition: opacity 1s ease-in-out;
 			-webkit-transition: opacity 1s ease-in-out;
@@ -3258,7 +3258,7 @@ input, select, textarea {
 			-webkit-transition-delay: 0.75s;
 			-ms-transition-delay: 0.75s;
 			transition-delay: 0.75s;
-			background: #1e252d;
+			background: #75E6DA;
 			content: '';
 			display: block;
 			height: 100%;
@@ -3271,7 +3271,7 @@ input, select, textarea {
 
 		body.is-preload #wrapper.fade-in:before {
 			opacity: 1;
-		}
+		} */
 
 		@media screen and (orientation: portrait) {
 
