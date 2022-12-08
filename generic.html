@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Generic Page - Massively by HTML5 UP</title>
+		<title>Data Science Salaries</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -19,21 +19,19 @@
 
 				<!-- Header -->
 					<header id="header">
-						<a href="index.html" class="logo">Massively</a>
-					</header>
+						<a href="index.html" class=""></a>
+					</header> 
 
 				<!-- Nav -->
 					<nav id="nav">
 						<ul class="links">
-							<li><a href="index.html">This is Massively</a></li>
-							<li class="active"><a href="generic.html">Generic Page</a></li>
-							<li><a href="elements.html">Elements Reference</a></li>
+							<li><a href="index.html">Portfolio Projects</a></li>
+							<!-- <li class="active"><a href="generic.html">Generic Page</a></li> -->
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
 						</ul>
 						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-							<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-							<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-							<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
 						</ul>
 					</nav>
 
@@ -43,68 +41,94 @@
 						<!-- Post -->
 							<section class="post">
 								<header class="major">
-									<span class="date">April 25, 2017</span>
-									<h1>This is a<br />
-									Generic Page</h1>
-									<p>Aenean ornare velit lacus varius enim ullamcorper proin aliquam<br />
-									facilisis ante sed etiam magna interdum congue. Lorem ipsum dolor<br />
-									amet nullam sed etiam veroeros.</p>
+									<h1>Data Science Salaries <br>Full Project</h1>
+									<p>Due to the questions I had regarding what range of salary a junior data analyst or scientist could expect getting into the field, I analyzed <a href="https://www.kaggle.com/datasets/ruchi798/data-science-job-salaries" target="_blank">this dataset</a> to try and find answers.
+									With this analysis I will attempt to answer questions such as:</p>
+								    <p></p>• What is the average annual salary for a data scientist in the US at each level of experience?<br>
+									• Do data scientists earn more working in the US or outside of it?<br>
+									• Is there a significant difference in salary for remote versus non-remote US workers?<br>
+									• Do large companies tend to pay their employees more money on average than smaller companies?
+								    </p>
+									<p><a href="https://github.com/princessjrc/Data-Science-Salaries-Project/blob/main/SQL%20DS%20Salaries" target="_blank">SQL Code</a><br>
+									<a href="https://github.com/princessjrc/Data-Science-Salaries-Project/blob/main/Python%20DS%20Salaries.ipynb" target="_blank">Python Code</a><br>
+									<a href="https://public.tableau.com/app/profile/jordan5494/viz/DSSalaryDashboard/Dashboard1#1" target="_blank">Tableau Dashboard</a></p>
 								</header>
-								<div class="image main"><img src="images/pic01.jpg" alt="" /></div>
-								<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur sapien risus, commodo eget turpis at, elementum convallis enim turpis, lorem ipsum dolor sit amet nullam.</p>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus. Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum.</p>
+								<div class="image main"><img src="images/datapic.jpg" alt="" /></div>
+								<p>The attributes most beneficial to this project were the 'salary_in_usd', 'employee_country', 'experience_level', and 'remote_ratio' columns.
+									I would start out by calculating the average annual salary of data scientists by experience level.
+								</p>
+								<p><b>What is the average annual salary for a data scientist in the US at each level of experience?</b></p>	
+								<p><div class="image "><img src="images/Experience.png" width="400" height="400" alt="" /></div></p>
+								<p>This graphic shows us what we generally expect to see, which is the fact that the more experienced an employee becomes, the more money they make:</p>
+								<p>Juniors: $98,706 - Intermediates: $135,617 - Seniors: $153,921 - Executives: $249,991
+								</p>
+								<p>I am, however, a little surprised at the salary of a junior data analyst. It seems higher than I would have expected, which gives me cause to look into these numbers farther if I can possibly find another dataset.</p>
+								<p><b>Do data scientists earn more working in the US or outside of it?</b></p>
+								<p><div class="image "><img src="images/Map.png" width="725" height="400" alt="" /></div></p>
+								<p>The average salary of an employee working inside the US: $149,194
+									<br>The average salary of an employee working anywhere outside the US: $67,754
+								</p>
+								<p>According to the data I've used, on average, employees working in the United States earn more money (USD) than those outside it. To really test this theory, however,
+									more data would need to be collected from many more countries than what is available in this dataset to give a more accurate calculation.
+								</p>
+								<p><b>Is there a significant difference in salary for remote versus non-remote US workers?</b></p>
+								<p><div class="image "><img src="images/remote.png" width="400" height="300" alt="" /></div>
+									<div class="image "><img src="images/RemoteChart.png" width="450" height="300" alt="" /></div></p>
+								<p>A remote ratio of 0 equals no remote work, 50 equals some remote work, and 100 equals all remote work. The average annual salary for:
+									<br>0: $141,253
+									<br>50: $139,837
+									<br>100: $151,980
+								</p>
+								<p>As we can see from this graphic, the majority of the data is based on employees who work remotely. We should keep this in mind when comparing salaries. From this data, we might conclude that, on average, remote
+									workers make more money than on-site workers, but more data should be collected and analyzed to corroborate this before making any conclusive inferences.
+								</p>
+								<p><b>Do large companies tend to pay their employees more money on average than smaller companies?</b></p>
+								<p><div class="image "><img src="images/CompanySize.png" width="300" height="700" alt="" /></div></p>
+								<p>Large: more than 250 employees
+									<br>Medium: 50 to 250 employees
+									<br>Small: less than 50 employees
+								</p>
+								<p>This graphic shows us that, on average, larger companies pay more than smaller companies. This lines up with what we would generally expect to see.</p>
+								<p><b>Other useful information?</b></p>
+								<p><div class="image "><img src="images/WorkYear.png" width="300" height="400" alt="" /></div></p>
+								<p>2020: $157,461
+									<br>2021: $155,562
+									<br>2022: $145,736
+								</p>
+								<p>There is a slight downward trend in annual income from 2020 to 2022.</p>
+								<p><b>Conclusions</b></p>
+								<p>From this analysis, we can conclude that more money will come with more experience, and junior data scientist (or similar) jobs can expect a starting salary as high as $98,000. 
+									It is likely that employees working outside the US will not receive as much income per USD as someone in the US. It is possible that remote workers make slightly more money, on average,
+									than on-site workers, but this is not definitive. Larger companies will likely pay more money than smaller companies. A more extensize dataset would be beneficial for a more in depth analysis.</p>
 							</section>
 
 					</div>
 
 				<!-- Footer -->
 					<footer id="footer">
-						<section>
-							<form method="post" action="#">
-								<div class="fields">
-									<div class="field">
-										<label for="name">Name</label>
-										<input type="text" name="name" id="name" />
-									</div>
-									<div class="field">
-										<label for="email">Email</label>
-										<input type="text" name="email" id="email" />
-									</div>
-									<div class="field">
-										<label for="message">Message</label>
-										<textarea name="message" id="message" rows="3"></textarea>
-									</div>
-								</div>
-								<ul class="actions">
-									<li><input type="submit" value="Send Message" /></li>
-								</ul>
-							</form>
-						</section>
 						<section class="split contact">
 							<section class="alt">
-								<h3>Address</h3>
-								<p>1234 Somewhere Road #87257<br />
-								Nashville, TN 00000-0000</p>
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
 							</section>
 							<section>
 								<h3>Phone</h3>
-								<p><a href="#">(000) 000-0000</a></p>
+								<p>(321) 987-1088</p>
 							</section>
 							<section>
 								<h3>Email</h3>
-								<p><a href="#">info@untitled.tld</a></p>
+								<p>campbell.r.jordan@gmail.com</p>
 							</section>
 							<section>
 								<h3>Social</h3>
 								<ul class="icons alt">
-									<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-									<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
-									<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
 								</ul>
 							</section>
 						</section>
 					</footer>
+								
 
 				<!-- Copyright -->
 					<div id="copyright">
