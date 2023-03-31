@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Project: Wild Rydes</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Portfolio Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: <br>Wild Rydes</h1>
+									<p>
+                                        This project involves building a serverless web application that allows users to request unicorn rides from the Wild Rydes fleet. The application will feature a user-friendly HTML interface for indicating pick-up locations and a backend RESTful web service that will dispatch unicorns. Users can register and log in before making requests. The architecture of the application uses a combination of AWS services, including Lambda, API Gateway, DynamoDB, Cognito, and Amplify Console. The Amplify Console provides hosting for static web resources, while the backend API is built using Lambda and API Gateway. User management and authentication functions are provided by Cognito, and DynamoDB is used as a persistence layer for data storage. The application leverages serverless technology to deliver a highly scalable and cost-effective solution.
+								    </p>
+									</header>
+								<div class="image main"><img src="images/wildrydes.png" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Host a Static Website</a></li>
+                                        <li><a href="#section2">Step 2: Manage Users</a></li>
+                                        <li><a href="#section3">Step 3: Build a Serverless Backend</a></li>
+                                        <li><a href="#section4">Step 4: Deploy a RESTful API</a></li>
+                                        <li><a href="#section5">Step 5: Terminate Resources</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                <h2>Step 1: Host a Static Website</h2>
+                                <p><div class="image "><img src="images/architecture.png" width="650" height="350" alt="" /></div></p>
+                                <p>
+                                    Configure AWS Amplify to host the static resources for the web application with continuous deployment built in. The benefits of continuous deployment include faster time-to-market, reduced risk of errors and downtime, and improved overall software quality.
+								</p>
+                                <p>
+                                    First, create a Git repository. 
+                                    <p><div class="image "><img src="images/createrepo.png" width="650" height="350" alt="" /></div></p>
+                                    I will then use the AWS CLI to run git clone (using Git credentials I created in the IAM console) to clone an empty repository.
+                                    <p><div class="image "><img src="images/gitclone.png" width="750" height="150" alt="" /></div></p>
+                                    Next, I will copy the website content from an existing publicly accessible S3 bucket and add the content to the repository.
+                                    <p><div class="image "><img src="images/copyS3.png" width="760" height="90" alt="" /></div></p>
+                                    I will finish by committing and pushing the files to my Git service.
+                                    <p><div class="image "><img src="images/commitgit.png" width="500" height="170" alt="" /></div></p>
+                                    Next I'll enable web hosting with AWS Amplify. Amplify will deploy the code I committed to git.
+                                    <p><div class="image "><img src="images/amplifydeploy.png" width="400" height="400" alt="" /></div></p>
+                                    Yay! The site works. Next I will test the Amplify Console's ability to rebuild and redeploy the app when it detects changes to the connected repository. I will do this by making a change to the main page. I will change the tab title from "Wild Rydes" to "Wild Rydes - Rydes of the Future!"
+                                    <p><div class="image "><img src="images/tab1.png" width="250" height="80" alt="" /></div></p>
+                                    <p><div class="image "><img src="images/indexchange.png" width="700" height="300" alt="" /></div></p>
+                                    <p><div class="image "><img src="images/tab2.png" width="300" height="80" alt="" /></div></p>
+                                    I've just created a static website which will be the base for the Wild Rydes business. AWS Amplify Console makes it really easy to deploy static websites following a continuous integration and delivery model.
+                                </p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Manage Users</h2>
+                                    Now I'll create an Amazon Cognito user pool to manage users' accounts. I'll deploy pages that enable customers to register as a new user, verify their email address, and sign into the site.
+                                    <p><div class="image "><img src="images/architecture2.png" width="600" height="350" alt="" /></div></p>
+                                    AWS Cognito offers two types of pools: User Pools and Identity Pools. User Pools are used for user authentication and management of user profiles, while Identity Pools provide temporary AWS credentials for users to securely access AWS resources without requiring AWS account credentials. These pools enable developers to create a secure and scalable authentication and authorization system for their applications.
+                                    <p><br>I will be using a user pool as the backend for the provided registration and sign-in pages.</p>
+                                    <p><div class="image "><img src="images/userpool.png" width="700" height="250" alt="" /></div></p>
+                                    To ensure that the web application can correctly authenticate users with the Cognito User Pool and access other AWS services securely, I will update the "config.js" file that contains settings for the Cognito User Pool ID, App Client ID, and AWS Region I just created.
+                                    <p><div class="image "><img src="images/config.js.png" width="700" height="200" alt="" /></div></p>
+                                    I am now able to sign up for the app.
+                                    <p><div class="image "><img src="images/signup.png" width="600" height="700" alt="" /></div></p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Build a Serverless Backend</h2>
+                                    I will now create a backend process using AWS Lambda and Amazon DynamoDB to handle requests from the web application. The app enables users to request a unicorn ride to a specific location, and a cloud-based service will need to fulfill those requests by processing the data sent from the JavaScript running in the user's browser.
+                                    <p><br>A Lambda function will be invoked each time a user requests a unicorn. The function will select a unicorn from the fleet, record the request in a DynamoDB table, and then respond to the frontend application with details about the unicorn being dispatched.</p>
+                                    <p><div class="image "><img src="images/architecture3.png" width="600" height="350" alt="" /></div></p>
+                                    First create a DynamoDB table. 
+                                    <p><div class="image "><img src="images/dynamotable.png" width="600" height="200" alt="" /></div></p>
+                                    Create a role and attach a policy called "AWSLambdaBasicExecutionRole". This will let a Lambda function write logs to Amazon CloudWatch Logs. 
+                                    <p><div class="image "><img src="images/lambdarole.png" width="600" height="200" alt="" /></div></p>
+                                    Next, I will create a custom inline policy for this role called "ddb:PutItem". With this policy, the IAM role associated with the Lambda function will have permission to put new items into the DynamoDB table.
+                                    <p><div class="image "><img src="images/dynamopolicy.png" width="700" height="300" alt="" /></div></p>
+                                    To process API requests from the web application, I will build the core Lambda function. The Lambda function will process a request to book a unicorn ride and record the ride information in a DynamoDB table. It takes in an event object and a context object, extracts information from the event object, finds an available unicorn, records the ride information in a DynamoDB table, and returns a response object to the API Gateway. The response object includes the ride ID, unicorn details, estimated time of arrival, and the rider's username.
+                                    <p><div class="image "><img src="images/requestunicorn.png" width="750" height="200" alt="" /></div></p>
+                                    Lastly, I will test the function that I built using the AWS Lambda console.
+                                    <p><div class="image "><img src="images/testevent.png" width="750" height="450" alt="" /></div></p>
+                                    The test was successful.
+                                    <p><div class="image "><img src="images/testsuccess.png" width="750" height="250" alt="" /></div></p>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Deploy a RESTful API</h2>
+                                    Now I will create a RESTful API using Amazon API Gateway and secure it with Amazon Cognito. The API will be publicly accessible on the internet. I will then use client-side JavaScript to make AJAX calls to the API from my static website, turning it into a dynamic web application.
+                                    <p><div class="image "><img src="images/architecture4.png" width="600" height="350" alt="" /></div></p>
+                                    First I will create a new REST API.
+                                    <p><div class="image "><img src="images/restapi.png" width="850" height="200" alt="" /></div></p>
+                                    Then I'll create a new resource called "/ride" within my API, and a POST method.
+                                    <p><div class="image "><img src="images/rideresource.png" width="650" height="400" alt="" /></div></p>
+                                    Voila! The website is now fully operational.
+                                    <p><div class="image "><img src="images/webmap.png" width="700" height="400" alt="" /></div></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Terminate Resources</h2>
+                                    As a best practice, it is best to delete resources you're not using to avoid unwanted charges. I will now go through and terminate all the resources I created, including an AWS Amplify app, an Amazon Cognito User Pool, an AWS Lambda function, an IAM role, a DynamoDB table, a REST API, and a CloudWatch Log.
+                                    <p><div class="image "><img src="images/deletefunction.png" width="700" height="350" alt="" /></div></p>
+                                    <p><div class="image "><img src="images/deletepool.png" width="500" height="400" alt="" /></div></p>
+                                    <p><div class="image "><img src="images/deletetable.png" width="450" height="450" alt="" /></div></p>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
