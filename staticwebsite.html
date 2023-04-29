@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Project: AWS Static Website</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Cloud Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: <br>Deploy a Static Website on AWS</h1>
+									<p>
+                                        This project involves deploying a web application on AWS using a combination of services. It will include configuring NAT Gateways, Security Groups, an Application Load Balancer (ALB), Route 53, Auto Scaling Groups (ASG), AWS Certificate Manager (ACM), and SSL certificates. The setup will ensure that the application is highly available, secure, and can handle fluctuations in traffic by automatically scaling up or down based on demand. The SSL certificate will be used to encrypt communication between the users and the application. The final setup will enable the users to access the application using a custom domain name via the ALB, which will route traffic to the appropriate instances in the ASG.
+								    </p>
+									</header>
+								<div class="image main"><img src="images/StaticWebsite/1.jpg" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Build a Three-Tier AWS Network VPC from Scratch</a></li>
+                                        <li><a href="#section2">Step 2: Create NAT Gateways</a></li>
+                                        <li><a href="#section3">Step 3: Create Security Groups</a></li>
+                                        <li><a href="#section4">Step 4: Create an Application Load Balancer</a></li>
+                                        <li><a href="#section5">Step 5: Register a New Domain Name in Route 53 and Create a Record Set</a></li>
+                                        <li><a href="#section6">Step 6: Register for an SSL Certificate in AWS Certificate Manager</a></li>
+                                        <li><a href="#section7">Step 7: Create an HTTPS (SSL) Listener for an Application Load Balancer</a></li>
+                                        <li><a href="#section8">Step 8: Create an Auto Scaling Group</a></li>
+                                        <li><a href="#section9">Step 9: Terminate Resources</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                <h2>Step 1: Build a Three-Tier AWS Network VPC from Scratch</h2>
+                                <p><div class="image main"><img src="images/StaticWebsite/2VPC_Reference_Architecture.jpg" alt="" /></div></p>
+                                <p>
+                                    Building a three-tier AWS network VPC from scratch involves creating a Virtual Private Cloud (VPC) from the AWS Management Console, setting up subnets for each tier (public, private, and database (which we will not use in this project)), and configuring routing tables and security groups to ensure traffic flows securely between the tiers. The VPC can then be launched with instances for each tier, and load balancers can be added for high availability and scalability.
+								</p>
+                                <p>
+                                    1. Create a new VPC using the CIDR range from our reference architecture.
+                                    <p><div class="image main"><img src="images/StaticWebsite/3myvpc.png" alt="" /></div></p>
+                                    2. Enable DNS hostnames. Enabling DNS hostnames in an AWS VPC allows instances within the VPC to have DNS names associated with their IP addresses.
+                                    <p><div class="image "><img src="images/StaticWebsite/4enablehostnames.png" width="270" height="150" alt="" /></div></p>
+                                    3. Create an Internet Gateway. The Internet Gateway is crucial for enabling internet traffic to enter and exit a VPC, allowing instances, NAT gateways, etc. within public subnets to have a public IP address and be directly accessible from the internet.
+                                    <p><div class="image main"><img src="images/StaticWebsite/5igw-static.png" alt="" /></div></p>
+                                    4. Attach the Internet Gateway to our VPC. We can only attach one Internet Gateway to a VPC at a time.
+                                    <p><div class="image main"><img src="images/StaticWebsite/6attachvpc.png"  alt="" /></div></p>
+                                    5. Create two public subnets in two different availability zones for high availability. We will create these with different CIDR blocks, since subnets cannot have overlapping CIDR blocks.
+                                    <p><div class="image main"><img src="images/StaticWebsite/7publicsubnets.png"  alt="" /></div></p>
+                                    6. Enable auto-assign public IPv4 address. Subnets with this enabled can allow traffic to be routed to the internet gateway through our default Main route table.
+                                    <p><div class="image main"><img src="images/StaticWebsite/8enableauto-assign.png" alt="" /></div></p>
+                                    7. Create a new public route table. When a new VPC is created, a Main route table is automatically created and associated with all subnets within the VPC. We will add a public route to our own public route table and associate our previously made public subnets with it.
+                                    <p><div class="image main"><img src="images/StaticWebsite/9publicroutetable.png" alt="" /></div></p>
+                                    8. Add a public route to the table.
+                                    <p><div class="image main"><img src="images/StaticWebsite/10addinternetroute.png" alt="" /></div></p>
+                                    9. Associate our previously made public subnets with the route table.
+                                    <p><div class="image main"><img src="images/StaticWebsite/11publicsubnetassoc.png" alt="" /></div></p>
+                                    10. Lastly, we will create four private subnets. Two in Availability Zone 1 (AZ1), and two in AZ2. This will leave us with six subnets.
+                                    <p><div class="image main"><img src="images/StaticWebsite/12subnets.png" alt="" /></div></p>
+                                    In a VPC, subnets can be designated as public or private based on their route table configuration. Public subnets are associated with a route table that has a route to an internet gateway, and private subnets are associated with a route table that does not have a route to an internet gateway.
+                                    <br><br><p>Subnets not associated with a route table default to the Main route table, which is private by default.</p>
+                                </p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Create NAT Gateways</h2>
+                                    A NAT gateway allows instances in private subnets to securely access the internet or other AWS services, without needing public IP addresses or self-managed NAT.
+                                    <p><div class="image main"><img src="images/StaticWebsite/13Nat_Gateway_Reference_Architecture.jpg" alt="" /></div></p>
+                                    1. Create a NAT gateway for AZ1 and allocate an elastic IP. This provides a static IP address that does not change even if the NAT gateway is stopped or restarted, and it ensures that the IP address of the NAT gateway remains constant, making it easier to maintain connectivity and security for external communication.
+                                    <p><div class="image main"><img src="images/StaticWebsite/14natgwaz1.png" alt="" /></div></p>
+                                    2. Create a private route table.
+                                    <p><div class="image main"><img src="images/StaticWebsite/15prtaz1.png" alt="" /></div></p>
+                                    3. Add a route to our NAT gateway to route traffic to the internet.
+                                    <p><div class="image main"><img src="images/StaticWebsite/16addroutengaz1.png" alt="" /></div></p>
+                                    4. Associate our private web and data subnets in AZ1 to the table. 
+                                    <p><div class="image main"><img src="images/StaticWebsite/17prisubnetassocaz1.png" alt="" /></div></p>
+                                    5. Replicate steps 1-4, but this time for the subnets in AZ2.
+                                    <p><div class="image main"><img src="images/StaticWebsite/18natgwaz2.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/19prirtaz2.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/20addnatroute.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/21assocprisnaz2.png" alt="" /></div></p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Create Security Groups</h2>
+                                    Security groups control the inbound and outbound traffic for resources in a VPC. They use rules to allow or block traffic based on protocol, IP addresses, and ports. We will create three security groups to control inbound traffic for our webservers.
+                                    <p><div class="image main"><img src="images/StaticWebsite/22.JPG" alt="" /></div></p>
+                                    1. Create the application load balancer security group. Inbound rules will allow access from HTTP (Port 80) and HTTPS (Port 443). We will add this security group to the application load balancer we create.
+                                    <p><div class="image main"><img src="images/StaticWebsite/23.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/24.png" alt="" /></div></p>
+                                    2. Create the SSH security group. Inbound rules will allow access from SSH (Port 22). We will limit this to only our IP address.
+                                    <p><div class="image main"><img src="images/StaticWebsite/25.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/26.png" alt="" /></div></p>
+                                    3. Create the webserver security group. Inbound rules will allow access from HTTP (Port 80), HTTPS (Port 443), and SSH (Port 22). We will add this security group to our EC2 instances. 
+                                    <p><div class="image main"><img src="images/StaticWebsite/27.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/28.png" alt="" /></div></p>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Create an Application Load Balancer</h2>
+                                    An Application Load Balancer (ALB) is a service that routes incoming traffic to multiple targets based on the content of the request, such as the URL or HTTP header. ALBs operate at the application layer (Layer 7) and support features like SSL/TLS termination, health checks, and content-based routing.
+                                    <p><div class="image main"><img src="images/StaticWebsite/1.jpg" alt="" /></div></p>
+                                    1. Launch EC2 instances in both private subnets. These will hold our webservers that will host our website, one in AZ1 and the other in AZ2. 
+                                    <p><div class="image main"><img src="images/StaticWebsite/30.png" alt="" /></div></p>
+                                    2. Create the application load balancer. Our target group will be the two instances we just created.
+                                    <p><div class="image main"><img src="images/StaticWebsite/31.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/32.png" alt="" /></div></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Register a New Domain Name in Route 53 and Create a Record Set</h2>
+                                    We will create a domain name for our website and use Route 53 as a service that helps people find that website on the internet. It will ensure that people can access the website easily and reliably.
+                                    <p><div class="image main"><img src="images/StaticWebsite/34.png" alt="" /></div></p>
+                                    1. Create a domain name.
+                                    <p><div class="image main"><img src="images/StaticWebsite/33.png" alt="" /></div></p>
+                                    2. Create a record.
+                                    <p><div class="image main"><img src="images/StaticWebsite/35.png" alt="" /></div></p>
+                                    <p>Creating a Route 53 alias record for an Application Load Balancer involves mapping the website or application's domain name to the ALB. This directs traffic to the targets behind the ALB. The user must specify the DNS name of the ALB and routing policy when creating the alias record.</p>
+                                </section>
+                                <section id="section6">
+                                    <h2>Step 6: Register for an SSL Certificate in AWS Certificate Manager</h2>
+                                    We will use an SSL Certificate to encrypt all communications between the web browser and our webservers. This is also referred to as encryption in transit. Currently we are not secure.
+                                    <p><div class="image "><img src="images/StaticWebsite/36.png" width="270" height="50" alt="" /></div></p>
+                                    1. Create a public SSL Certificate in AWS Certificate Manager.
+                                    <p><div class="image main"><img src="images/StaticWebsite/37.png" alt="" /></div></p>
+                                    2. Create DNS records in Amazon Route 53. This is a validation process designed to ensure that only the domain owner can obtain the SSL certificate.
+                                    <p><div class="image main"><img src="images/StaticWebsite/38.png" alt="" /></div></p>
+                                    Our certificate is good to go.
+                                    <p><div class="image main"><img src="images/StaticWebsite/39.png" alt="" /></div></p>
+                                </section>
+                                <section id="section7">
+                                    <h2>Step 7: Create an HTTPS (SSL) Listener for an Application Load Balancer</h2>
+                                    Creating an HTTPS (SSL) listener for an ALB involves configuring the ALB to handle SSL/TLS encryption for incoming requests. This requires associating the SSL certificate we created with the ALB's listener configuration. Once configured, the ALB can decrypt and forward incoming HTTPS requests to the appropriate backend target group.
+                                    1. Add listener.
+                                    <p><div class="image main"><img src="images/StaticWebsite/40.png" alt="" /></div></p>
+                                    2. Redirect traffic to the HTTPS listener from the HTTP listener.
+                                    <p><div class="image main"><img src="images/StaticWebsite/41.png" alt="" /></div></p>
+                                    Our website is now secure.
+                                    <p><div class="image "><img src="images/StaticWebsite/42.png" width="240" height="50" alt="" /></div></p>
+                                </section>
+                                <section id="section8">
+                                    <h2>Step 8: Create an Auto Scaling Group</h2>
+                                    An Auto Scaling Group (ASG) is a group of EC2 instances that can automatically scale up or down based on demand. This helps maintain the required number of instances for the application to handle variable traffic loads without downtime or performance degradation.
+                                    <p><div class="image main"><img src="images/StaticWebsite/43.png" alt="" /></div></p>
+                                    1. Terminate the EC2 instances we previously created manually.
+                                    <p><div class="image main"><img src="images/StaticWebsite/44.png" alt="" /></div></p>
+                                    2. Create a launch template. This contains the configurations of our EC2 instance that the ASG will use to launch new instances in the private app subnets.
+                                    <p><div class="image main"><img src="images/StaticWebsite/45.png" alt="" /></div></p>
+                                    3. Create an ASG.
+                                    <p><div class="image main"><img src="images/StaticWebsite/46.png" alt="" /></div></p>
+                                    We now have two instances running in our ASG.
+                                    <p><div class="image main"><img src="images/StaticWebsite/47.png" alt="" /></div></p>
+                                </section>
+                                <section id="section9">
+                                    <h2>Step 9: Terminate Resources</h2>
+                                    To complete this project, we will delete the resources we created to avoid unwanted charges. This includes our ASG, launch templates, ALB, target group, security groups, NAT gateways, VPC, elastic IPs, record sets.
+                                    <p><div class="image main"><img src="images/StaticWebsite/48.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/49.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/50.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/51.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/52.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/53.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/54.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/55.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/56.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/StaticWebsite/57.png" alt="" /></div></p>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
