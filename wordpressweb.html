@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Project: AWS Static Website</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Cloud Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: <br>Deploy a WordPress Website on AWS</h1>
+									<p>
+                                        The objective of creating a WordPress website using AWS is to build a highly available, scalable, and secure website that can handle variable traffic loads and provide a seamless user experience. To achieve this objective, various AWS services are used, such as VPC, security groups, EC2, NAT gateways, RDS, EFS, ALBs, Route 53, Auto Scaling Groups, AWS Certificate Manager, and a bastion host. The combination of these services provides a robust and scalable platform for hosting a WordPress website, while ensuring high availability, security, and ease of management. 
+								    </p>
+									</header>
+								<div class="image main"><img src="images/WordPress/1.jpg" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Build a Three-Tier AWS Network VPC from Scratch</a></li>
+                                        <li><a href="#section2">Step 2: Create NAT Gateways</a></li>
+                                        <li><a href="#section3">Step 3: Create Security Groups</a></li>
+                                        <li><a href="#section4">Step 4: Create the RDS Instance</a></li>
+                                        <li><a href="#section5">Step 5: Create the Elastic File System (EFS)</a></li>
+                                        <li><a href="#section6">Step 6: Launch the Setup Server</a></li>
+                                        <li><a href="#section7">Step 7: Install WordPress</a></li>
+                                        <li><a href="#section8">Step 8: Create an Application Load Balancer</a></li>
+                                        <li><a href="#section9">Step 9: Register a New Domain Name in Route 53 and Create a Record Set</a></li>
+                                        <li><a href="#section10">Step 10: Register for an SSL Certificate in AWS Certificate Manager</a></li>
+                                        <li><a href="#section11">Step 11: Launch Bastion Host</a></li>
+                                        <li><a href="#section12">Step 12: SSH into an Instance in the Private Subnet</a></li>
+                                        <li><a href="#section13">Step 13: Create an HTTPS (SSL) Listener for an Application Load Balancer</a></li>
+                                        <li><a href="#section14">Step 14: Create an Auto Scaling Group</a></li>
+                                        <li><a href="#section15">Step 15: Terminate Resources</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                <h2>Step 1: Build a Three-Tier AWS Network VPC from Scratch</h2>
+                                <p><div class="image main"><img src="images/WordPress/2.jpg" alt="" /></div></p>
+                                <p>
+                                    Building a three-tier AWS network VPC from scratch involves creating a Virtual Private Cloud (VPC) from the AWS Management Console, setting up subnets for each tier (public, private, and database), and configuring routing tables and security groups to ensure traffic flows securely between the tiers. The VPC can then be launched with instances for each tier, and load balancers can be added for high availability and scalability.
+								</p>
+                                <p>
+                                    1. Create a new VPC using the CIDR range from our reference architecture.
+                                    <p><div class="image main"><img src="images/WordPress/3.png" alt="" /></div></p>
+                                    2. Enable DNS hostnames. Enabling DNS hostnames in an AWS VPC allows instances within the VPC to have DNS names associated with their IP addresses.
+                                    <p><div class="image "><img src="images/WordPress/4.png" width="260" height="170" alt="" /></div></p>
+                                    3. Create an Internet Gateway. The Internet Gateway is crucial for enabling internet traffic to enter and exit a VPC, allowing instances, NAT gateways, etc. within public subnets to have a public IP address and be directly accessible from the internet.
+                                    <p><div class="image main"><img src="images/WordPress/5.png" alt="" /></div></p>
+                                    4. Attach the Internet Gateway to our VPC. We can only attach one Internet Gateway to a VPC at a time.
+                                    <p><div class="image main"><img src="images/WordPress/6.png"  alt="" /></div></p>
+                                    5. Create two public subnets in two different availability zones for high availability. We will create these with different CIDR blocks, since subnets cannot have overlapping CIDR blocks.
+                                    <p><div class="image main"><img src="images/WordPress/7.png"  alt="" /></div></p>
+                                    6. Enable auto-assign public IPv4 address.
+                                    <p><div class="image main"><img src="images/WordPress/8.png" alt="" /></div></p>
+                                    7. Create a new public route table. When a new VPC is created, a Main route table is automatically created and associated with all subnets within the VPC. We will add a public route to our own public route table and associate our previously made public subnets with it.
+                                    <p><div class="image main"><img src="images/WordPress/9.png" alt="" /></div></p>
+                                    8. Add a public route to the table. We'll do this by adding a target for our Internet Gateway.
+                                    <p><div class="image main"><img src="images/WordPress/10.png" alt="" /></div></p>
+                                    9. Associate our previously made public subnets with the public route table.
+                                    <p><div class="image main"><img src="images/WordPress/11.png" alt="" /></div></p>
+                                    10. Lastly, we will create four private subnets that will host our apps and databases. Two in Availability Zone 1 (AZ1), and two in AZ2. This will leave us with six subnets.
+                                    <p><div class="image main"><img src="images/WordPress/12.png" alt="" /></div></p>
+                                    In a VPC, subnets can be designated as public or private based on their route table configuration. Public subnets are associated with a route table that has a route to an internet gateway, and private subnets are associated with a route table that does not have a route to an internet gateway.
+                                    <br><br><p>Subnets not associated with a route table default to the Main route table, which is private by default.</p>
+                                </p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Create NAT Gateways</h2>
+                                    A NAT gateway allows instances in private subnets to securely access the internet or other AWS services, without needing public IP addresses or self-managed NAT.
+                                    <p><div class="image main"><img src="images/WordPress/13.jpg" alt="" /></div></p>
+                                    1. Create a NAT gateway for AZ1 and allocate an elastic IP. This provides a static IP address that does not change even if the NAT gateway is stopped or restarted, and it ensures that the IP address of the NAT gateway remains constant, making it easier to maintain connectivity and security for external communication.
+                                    <p><div class="image main"><img src="images/WordPress/13.png" alt="" /></div></p>
+                                    2. Create a private route table.
+                                    <p><div class="image main"><img src="images/WordPress/14.png" alt="" /></div></p>
+                                    3. Add a route to our NAT gateway to route traffic to the internet.
+                                    <p><div class="image main"><img src="images/WordPress/18.png" alt="" /></div></p>
+                                    4. Associate our private web and data subnets in AZ1 to the table. 
+                                    <p><div class="image main"><img src="images/WordPress/15.png" alt="" /></div></p>
+                                    5. Replicate steps 1-4, but this time for the subnets in AZ2.
+                                    <p><div class="image main"><img src="images/WordPress/16.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/17.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/18.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/19.png" alt="" /></div></p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Create Security Groups</h2>
+                                    Security groups control the inbound and outbound traffic for resources in a VPC. They use rules to allow or block traffic based on protocol, IP addresses, and ports. We will create five security groups to control inbound traffic for our webservers.
+                                    <p><div class="image main"><img src="images/WordPress/20.jpg" alt="" /></div></p>
+                                    1. Create the application load balancer security group. Inbound rules will allow access from HTTP (Port 80) and HTTPS (Port 443). We will add this security group to the application load balancer we create.
+                                    <p><div class="image main"><img src="images/WordPress/21.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/22.png" alt="" /></div></p>
+                                    2. Create the SSH security group. Inbound rules will allow access from SSH (Port 22). We will limit this to only our IP address.
+                                    <p><div class="image main"><img src="images/WordPress/23.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/24.png" alt="" /></div></p>
+                                    3. Create the webserver security group. Inbound rules will allow access from HTTP (Port 80), HTTPS (Port 443), and SSH (Port 22), and the source is our ALB and SSH security groups. We will add this security group to our EC2 instances. 
+                                    <p><div class="image main"><img src="images/WordPress/25.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/26.png" alt="" /></div></p>
+                                    4. Create the database security group. Inbound rules will allow access from port 3306, and the source will be our webserver security group. We will add this to our database instance.
+                                    <p><div class="image main"><img src="images/WordPress/27.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/28.png" alt="" /></div></p>
+                                    5.Create the EFS security group. Inbound rules will allow access from port 2049 and 22, and the source will be our webserver and SSH security group. We will also add this security group as a source for itself. 
+                                    <br><br> Adding a security group as a source for itself means that the security group allows inbound traffic from other resources that are also assigned to the same security group. This is necessary for EFS because it requires the security group to be allowed to access the EFS mount target, which is also assigned to the same security group. Without allowing inbound traffic from the same security group, the EC2 instances won't be able to access the EFS mount target, which will result in errors when accessing shared files.
+                                    <p><div class="image main"><img src="images/WordPress/29.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/30.png" alt="" /></div></p>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Create the RDS Instance</h2>
+                                    Amazon Relational Database Service (Amazon RDS) is a fully managed database service provided by AWS that makes it easy to set up, operate, and scale a relational database in the cloud. With Amazon RDS, you can choose from six popular relational database engines, including MySQL, PostgreSQL, Oracle, SQL Server, MariaDB, and Amazon Aurora.
+                                    <br><br> In this project, we will use MySQL as our database engine.
+                                    <p><div class="image main"><img src="images/WordPress/31.jpg" alt="" /></div></p>
+                                    1. Create subnet groups. These will allow us to specify which subnets we want to create our RDS database in (Private Data Subnet AZ1 and Private Data Subnet AZ2).
+                                    <p><div class="image main"><img src="images/WordPress/32.png" alt="" /></div></p>
+                                    2. Create the RDS database. We will create this, the Master DB, in Availability Zone 2 and have a stand-by in AZ1.
+                                    <p><div class="image main"><img src="images/WordPress/33.png" alt="" /></div></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Create the Elastic File System (EFS)</h2>
+                                    Amazon EFS is a cloud-based file storage service for applications and workloads that run in AWS. An EFS mount target is the access point to an EFS file system from an Amazon VPC subnet. It allows EC2 instances in the VPC subnet to mount the file system and access the shared data. 
+                                    <p><div class="image main"><img src="images/WordPress/34a.png" alt="" /></div></p>
+                                    1. Create the file system. We will create our mount targets in the Private Data Subnet AZ1 and Private Data Subnet AZ2.
+                                    <p><div class="image main"><img src="images/WordPress/34.png" alt="" /></div></p>
+                                </section>
+                                <section id="section6">
+                                    <h2>Step 6: Launch the Setup Server</h2>
+                                    We will now launch the EC2 instance setup server. We will utilize this instance to install WordPress and transfer the code to our EFS. We'll deploy it in the public subnet for ease of installation and file transfer to EFS. Once our files are stored in EFS, our servers in the private subnet will be able to access the code from there upon launch.
+                                    <p><div class="image main"><img src="images/WordPress/35a.png" alt="" /></div></p>
+                                    1. Create a key pair. We will use this to SSH into our EC2 instance. 
+                                    <p><div class="image main"><img src="images/WordPress/35.png" alt="" /></div></p>
+                                    2. Change permissions on our key. This will set the read-only permission for the owner of the file, and no permissions for anyone else.
+                                    <p><div class="image main"><img src="images/WordPress/36.png" alt="" /></div></p>
+                                    3. Launch our setup EC2 instance with our three security groups: webserver security group, ALB security group, and SSH security group.
+                                    <p><div class="image main"><img src="images/WordPress/38.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/39.png" alt="" /></div></p>
+                                </section>
+                                <section id="section7">
+                                    <h2>Step 7: Install WordPress</h2>
+                                    Now we'll download and extract WordPress files to the document root directory of our web server.
+                                    <p><div class="image main"><img src="images/WordPress/35a.png" alt="" /></div></p>
+                                    1. SSH into our Setup Server. 
+                                    <p><div class="image main"><img src="images/WordPress/40.png" alt="" /></div></p>
+                                    2. Create the HTML directory and mount the EFS to it.
+                                    <p><div class="image main"><img src="images/WordPress/41.png" alt="" /></div></p>
+                                    3. Install Apache.
+                                    <p><div class="image main"><img src="images/WordPress/42.png" alt="" /></div></p>
+                                    4. Install PHP 7.4.
+                                    <p><div class="image main"><img src="images/WordPress/43.png" alt="" /></div></p>
+                                    5. Install MySQL 5.7.
+                                    <p><div class="image main"><img src="images/WordPress/44.png" alt="" /></div></p>
+                                    6. Set permissions.
+                                    <p><div class="image main"><img src="images/WordPress/45.png" alt="" /></div></p>
+                                    7. Download WordPress files.
+                                    <p><div class="image main"><img src="images/WordPress/46.png" alt="" /></div></p>
+                                    8. Create the wp-config.php file.
+                                    <p><div class="image main"><img src="images/WordPress/47.png" alt="" /></div></p>
+                                    9. Edit the wp-config.php file with our database settings.
+                                    <p><div class="image main"><img src="images/WordPress/48.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/48b.png" alt="" /></div></p>
+                                    10. Restart the webserver.
+                                    <p><div class="image main"><img src="images/WordPress/49.png" alt="" /></div></p>
+                                    11. Finish installing WordPress.
+                                    <p><div class="image main"><img src="images/WordPress/49b.png" alt="" /></div></p>
+                                </section>
+                                <section id="section8">
+                                    <h2>Step 8: Create an Application Load Balancer</h2>
+                                    An Application Load Balancer (ALB) is a service that routes incoming traffic to multiple targets based on the content of the request, such as the URL or HTTP header. ALBs operate at the application layer (Layer 7) and support features like SSL/TLS termination, health checks, and content-based routing.
+                                    <p><div class="image main"><img src="images/WordPress/50.png" alt="" /></div></p>
+                                    1. Launch EC2 instances in both private subnets. These will hold our webservers that will host our website, one in AZ1 and the other in AZ2. 
+                                    <p><div class="image main"><img src="images/WordPress/51.png" alt="" /></div></p>
+                                    2. Create a target group. We will put the EC2 instances we just created in the target group to allow the ALB to route traffic to them.
+                                    <p><div class="image main"><img src="images/WordPress/52.png" alt="" /></div></p>
+                                    3. Create the application load balancer.
+                                    <p><div class="image main"><img src="images/WordPress/53.png" alt="" /></div></p>
+                                    4. Go into the settings of our WordPress and change the WordPress URL and Site URL to the URL of our ALB.
+                                    <p><div class="image main"><img src="images/WordPress/53b.png" alt="" /></div></p>
+                                    5. We can now delete our Setup Server.
+                                    <p><div class="image main"><img src="images/WordPress/delete13.png" alt="" /></div></p>
+                                </section>
+                                <section id="section9">
+                                    <h2>Step 9: Register a New Domain Name in Route 53 and Create a Record Set</h2>
+                                    We will create a domain name for our website and use Route 53 as a service that helps people find that website on the internet. It will ensure that people can access the website easily and reliably.
+                                    <p><div class="image main"><img src="images/StaticWebsite/34.png" alt="" /></div></p>
+                                    1. Create a domain name.
+                                    <p><div class="image main"><img src="images/StaticWebsite/33.png" alt="" /></div></p>
+                                    2. Create a record.
+                                    <br><br><p>Creating a Route 53 alias record for an Application Load Balancer involves mapping the website or application's domain name to the ALB. This directs traffic to the targets behind the ALB. The user must specify the DNS name of the ALB and routing policy when creating the alias record.</p>
+                                    <p><div class="image "><img src="images/WordPress/54.png" height="450" width="300" alt="" /></div></p>
+                                    3. Replace the ALB address for our WordPress site with the domain name we just created.
+                                    <p><div class="image main"><img src="images/WordPress/55.png" alt="" /></div></p>
+                                </section>
+                                <section id="section10">
+                                    <h2>Step 10: Register for an SSL Certificate in AWS Certificate Manager</h2>
+                                    We will use an SSL Certificate to encrypt all communications between the web browser and our webservers. This is also referred to as encryption in transit. Currently we are not secure.
+                                    <p><div class="image "><img src="images/WordPress/56.png" width="270" height="50" alt="" /></div></p>
+                                    1. Create a public SSL Certificate in AWS Certificate Manager.
+                                    <p><div class="image main"><img src="images/StaticWebsite/37.png" alt="" /></div></p>
+                                    2. Create DNS records in Amazon Route 53. This is a validation process designed to ensure that only the domain owner can obtain the SSL certificate.
+                                    <p><div class="image main"><img src="images/StaticWebsite/38.png" alt="" /></div></p>
+                                    Our certificate is good to go.
+                                    <p><div class="image main"><img src="images/StaticWebsite/39.png" alt="" /></div></p>
+                                </section>
+                                <section id="section11">
+                                    <h2>Step 11: Launch Bastion Host</h2>
+                                    A bastion host is a dedicated server instance used to securely connect to other servers within a private network. It provides an additional layer of security by acting as a gateway that requires two-factor authentication and provides access control for remote connections.
+                                    <p><div class="image main"><img src="images/WordPress/58.png" alt="" /></div></p>
+                                    1. Create the bastion host in the public subnet.
+                                    <p><div class="image main"><img src="images/WordPress/57.png" alt="" /></div></p>
+                                </section>
+                                <section id="section12">
+                                    <h2>Step 12: SSH into an Instance in the Private Subnet</h2>
+                                    We can now use the bastion host to SSH into any instance in our private subnets.
+                                    <p><div class="image main"><img src="images/WordPress/58.png" alt="" /></div></p>
+                                    1. First we will run the command that will allow us to SSH from the bastion host to any instance in the private subnet.
+                                    <p><div class="image main"><img src="images/WordPress/59.png" alt="" /></div></p>
+                                    2. SSH into our bastion host.
+                                    <p><div class="image main"><img src="images/WordPress/60.png" alt="" /></div></p>
+                                    3. SSH into the private webserver in AZ1. We will do this by using the instance's private IP address.
+                                    <p><div class="image main"><img src="images/WordPress/61.png" alt="" /></div></p>
+                                </section>
+                                <section id="section13">
+                                    <h2>Step 13: Create an HTTPS (SSL) Listener for an Application Load Balancer</h2>
+                                    Creating an HTTPS (SSL) listener for an ALB involves configuring the ALB to handle SSL/TLS encryption for incoming requests. This requires associating the SSL certificate we created with the ALB's listener configuration. Once configured, the ALB can decrypt and forward incoming HTTPS requests to the appropriate backend target group.
+                                    <br><br>1. Add listener.
+                                    <p><div class="image main"><img src="images/WordPress/62.png" alt="" /></div></p>
+                                    2. Redirect traffic to the HTTPS listener from the HTTP listener.
+                                    <p><div class="image main"><img src="images/WordPress/63.png" alt="" /></div></p>
+                                    3. Modify the wp-config file with the following code.
+                                    <p><div class="image main"><img src="images/WordPress/64.png" alt="" /></div></p>
+                                    This code is used to make sure that our WordPress website uses a secure SSL connection when users access the admin pages. It also checks to see if the user is accessing the website through an AWS load balancer with SSL enabled, and if so, it sets the HTTPS protocol to be used for the request. This helps ensure that all user data transmitted between the website and users is encrypted and secure.
+                                    <br><br>4. Check that our website is now secure.
+                                    <p><div class="image "><img src="images/WordPress/65.png" width="280" height="50" alt="" /></div></p>
+                                    5. Update the URL settings for our WordPress site from 'http' to 'https'.
+                                    <p><div class="image main"><img src="images/WordPress/66.png" alt="" /></div></p>
+                                </section>
+                                <section id="section14">
+                                    <h2>Step 14: Create an Auto Scaling Group</h2>
+                                    An Auto Scaling Group (ASG) is a group of EC2 instances that can automatically scale up or down based on demand. This helps maintain the required number of instances for the application to handle variable traffic loads without downtime or performance degradation.
+                                    <p><div class="image main"><img src="images/StaticWebsite/43.png" alt="" /></div></p>
+                                    1. Terminate the EC2 instances we previously created manually.
+                                    <p><div class="image main"><img src="images/WordPress/67.png" alt="" /></div></p>
+                                    2. Create a launch template. This contains the configurations of our EC2 instance that the ASG will use to launch new instances in the private app subnets.
+                                    <p><div class="image main"><img src="images/WordPress/68.png" alt="" /></div></p>
+                                    3. Create the auto scaling group.
+                                    <p><div class="image main"><img src="images/WordPress/69.png" alt="" /></div></p>
+                                    We now have two instances running in our ASG.
+                                    <p><div class="image main"><img src="images/WordPress/70.png" alt="" /></div></p>
+                                    4. Check the health status of our running EC2 instances.
+                                    <p><div class="image main"><img src="images/WordPress/71.png" alt="" /></div></p>
+                                    Our WordPress website is complete and running!
+                                    <p><div class="image main"><img src="images/WordPress/72.png" alt="" /></div></p>
+                                </section>
+                                <section id="section15">
+                                    <h2>Step 15: Terminate Resources</h2>
+                                    To complete this project, we will delete the resources we created to avoid unwanted charges. This includes our ASG, launch templates, ALB, target group, RDS, bastion host, EFS, security groups, NAT gateways, VPC, elastic IPs, and record sets.
+                                    <p><div class="image main"><img src="images/WordPress/delete1.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete2.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete3.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete4.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete5.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete6.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete7.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete8.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete9.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete10.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete11.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete12.png" alt="" /></div></p>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
