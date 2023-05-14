@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Project: AWS Dynamic Website + Terraform</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Cloud Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: <br>Deploy a Dynamic Website on AWS (+ Terraform)</h1>
+									<p>
+                                        This project involves building a dynamic website using the AWS Management Console using a 3-tier VPC architecture with public and private subnets, an Internet Gateway (IG), and NAT Gateways to provide a highly secure network environment. MySQL RDS and Workbench were employed to ensure scalability and high availability of the database. EC2 instances, ALB, ASG, and Route 53 were utilized to ensure high availability and scalability of the website, while S3 was used for storage and backup. IAM Roles were implemented to manage access to the resources, and AMI was utilized to create and launch instances. Finally, SNS and Certificate Manager were used to manage notifications and SSL/TLS certificates, ensuring the security of the website.
+                                        There is also code provided for how to create this website using Terraform. Project provided by <a href="https://www.aosnote.com/products/deploy-a-dynamic-website-on-aws" target="_blank">AOSNote</a>.
+                                    </p>
+                                    <a href="https://github.com/princessjrc/dynamic-web-terraform-project/tree/main" target="_blank">Dynamic Website Terraform Code</a>
+									</header>
+								<div class="image main"><img src="images/DynamicWeb2/0.png" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Build a Three-Tier AWS Network VPC from Scratch</a></li>
+                                        <li><a href="#section2">Step 2: Create NAT Gateways</a></li>
+                                        <li><a href="#section3">Step 3: Create Security Groups</a></li>
+                                        <li><a href="#section4">Step 4: Launch a MySQL RDS Instance</a></li>
+                                        <li><a href="#section5">Step 5: Create an S3 Bucket and Upload a File</a></li>
+                                        <li><a href="#section6">Step 6: Create an IAM Role for the S3 Policy</a></li>
+                                        <li><a href="#section7">Step 7: Deploy the Setup Server</a></li>
+                                        <li><a href="#section8">Step 8: Import the Dummy Data for the Website</a></li>
+                                        <li><a href="#section9">Step 9: Create an AMI</a></li>
+                                        <li><a href="#section10">Step 10: Create an Application Load Balancer</a></li>
+                                        <li><a href="#section11">Step 11: Register a New Domain Name in Route 53 and Create a Record Set</a></li>
+                                        <li><a href="#section12">Step 12: Register for an SSL Certificate in AWS Certificate Manager</a></li>
+                                        <li><a href="#section13">Step 13: Create an HTTPS Listener</a></li>
+                                        <li><a href="#section14">Step 14: SSH into an Instance in the Private Subnet</a></li>
+                                        <li><a href="#section15">Step 15: Create Another AMI</a></li>
+                                        <li><a href="#section16">Step 16: Create an Auto Scaling Group</a></li>
+                                        <li><a href="#section17">Step 17: Terminate Resources</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                <h2>Step 1: Build a Three-Tier AWS Network VPC from Scratch</h2>
+                                <p><div class="image main"><img src="images/WordPress/2.jpg" alt="" /></div></p>
+                                <p>
+                                    Building a three-tier AWS network VPC from scratch involves creating a Virtual Private Cloud (VPC) from the AWS Management Console, setting up subnets for each tier (public, private, and database), and configuring routing tables and security groups to ensure traffic flows securely between the tiers. The VPC can then be launched with instances for each tier, and load balancers can be added for high availability and scalability.
+								</p>
+                                <p>
+                                    1. Create a new VPC using the CIDR range from our reference architecture.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/20.png" alt="" /></div></p>
+                                    2. Enable DNS hostnames. Enabling DNS hostnames in an AWS VPC allows instances within the VPC to have DNS names associated with their IP addresses.
+                                    <p><div class="image "><img src="images/WordPress/4.png" width="260" height="170" alt="" /></div></p>
+                                    3. Create an Internet Gateway. The Internet Gateway is crucial for enabling internet traffic to enter and exit a VPC, allowing instances, NAT gateways, etc. within public subnets to have a public IP address and be directly accessible from the internet.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/21.png" alt="" /></div></p>
+                                    4. Attach the Internet Gateway to our VPC. We can only attach one Internet Gateway to a VPC at a time.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/22.png"  alt="" /></div></p>
+                                    5. Create two public subnets in two different availability zones for high availability. We will create these with different CIDR blocks, since subnets cannot have overlapping CIDR blocks.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/23.png"  alt="" /></div></p>
+                                    6. Enable auto-assign public IPv4 address for both subnets.
+                                    <p><div class="image main"><img src="images/DynamicWeb/6bothsubnets.png" alt="" /></div></p>
+                                    7. Create a new public route table. When a new VPC is created, a Main route table is automatically created and associated with all subnets within the VPC. We will add a public route to our own public route table and associate our previously made public subnets with it.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/24.png" alt="" /></div></p>
+                                    8. Add a public route to the table. We'll do this by adding a target for our Internet Gateway.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/25.png" alt="" /></div></p>
+                                    9. Associate our previously made public subnets with the public route table.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/26.png" alt="" /></div></p>
+                                    10. Lastly, we will create four private subnets that will host our apps and databases. Two in Availability Zone 1 (AZ1), and two in AZ2. This will leave us with six subnets.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/27.png" alt="" /></div></p>
+                                    In a VPC, subnets can be designated as public or private based on their route table configuration. Public subnets are associated with a route table that has a route to an internet gateway, and private subnets are associated with a route table that does not have a route to an internet gateway.
+                                    <br><br><p>Subnets not associated with a route table default to the Main route table, which is private by default.</p>
+                                    <a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/vpc.tf" target="_blank">Terraform Code: VPC</a>
+                                </p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Create NAT Gateways</h2>
+                                    A NAT gateway allows instances in private subnets to securely access the internet or other AWS services, without needing public IP addresses or self-managed NAT.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/28.png" alt="" /></div></p>
+                                    1. Create a NAT gateway for AZ1 and allocate an elastic IP. This provides a static IP address that does not change even if the NAT gateway is stopped or restarted, and it ensures that the IP address of the NAT gateway remains constant, making it easier to maintain connectivity and security for external communication.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/29.png" alt="" /></div></p>
+                                    2. Create a private route table.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/30.png" alt="" /></div></p>
+                                    3. Add a route to our NAT gateway to route traffic to the internet.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/31.png" alt="" /></div></p>
+                                    4. Associate our private web and data subnets in AZ1 to the table. 
+                                    <p><div class="image main"><img src="images/DynamicWeb2/32.png" alt="" /></div></p>
+                                    5. Replicate steps 1-4, but this time for the subnets in AZ2.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/33.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/34.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/35.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/36.png" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/nat-gateway.tf" target="_blank">Terraform Code: NAT Gateways</a></p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Create Security Groups</h2>
+                                    Security groups control the inbound and outbound traffic for resources in a VPC. They use rules to allow or block traffic based on protocol, IP addresses, and ports. We will create four security groups to control inbound traffic for our webservers.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/37.png" alt="" /></div></p>
+                                    1. Create the application load balancer security group. Inbound rules will allow access from HTTP (Port 80) and HTTPS (Port 443). We will add this security group to the application load balancer we create.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/38.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb/21.png" alt="" /></div></p>
+                                    2. Create the SSH security group. Inbound rules will allow access from SSH (Port 22). We will limit this to only our IP address.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/39.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb/23.png" alt="" /></div></p>
+                                    3. Create the webserver security group. Inbound rules will allow access from HTTP (Port 80), HTTPS (Port 443), and SSH (Port 22), and the source is our ALB and SSH security groups. We will add this security group to our EC2 instances. 
+                                    <p><div class="image main"><img src="images/DynamicWeb2/40.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb/25.png" alt="" /></div></p>
+                                    4. Create the database security group. Inbound rules will allow access from port 3306, and the source will be our webserver security group. We will add this to our database instance.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/41.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb/27.png" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/security_group.tf" target="_blank">Terraform Code: Security Groups</a></p>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Launch a MySQL RDS Instance</h2>
+                                    Amazon Relational Database Service (Amazon RDS) is a fully managed database service provided by AWS that makes it easy to set up, operate, and scale a relational database in the cloud. With Amazon RDS, you can choose from six popular relational database engines, including MySQL, PostgreSQL, Oracle, SQL Server, MariaDB, and Amazon Aurora.
+                                    <br><br> In this project, we will use MySQL as our database engine.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/42.png" alt="" /></div></p>
+                                    1. Create the subnet group. This will allow us to specify which subnets we want to create our RDS database in (Private Data Subnet AZ1 and Private Data Subnet AZ2).
+                                    <p><div class="image main"><img src="images/DynamicWeb2/43.png" alt="" /></div></p>
+                                    2. Create the RDS database. We will create this, the Master DB, in Availability Zone 2 and have a stand-by in AZ1.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/44.png" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/rds.tf" target="_blank">Terraform Code: RDS</a></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Create an S3 Bucket and Upload a File</h2>
+                                    Amazon S3 is a cloud-based storage service that provides users with scalable, reliable, and secure object storage capabilities. We will use it to upload and store our application webfiles.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/45.png" alt="" /></div></p>
+                                    1. Create the S3 bucket that will hold our webfiles.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/46.png" alt="" /></div></p>
+                                    2. Upload the webfiles into our newly created bucket.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/47.png" alt="" /></div></p>
+                                    3. Create the S3 bucket that will hold our site's dummy data.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/48.png" alt="" /></div></p>
+                                    4. Upload the dummy data into our newly created bucket.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/49.png" alt="" /></div></p>
+                                </section>
+                                <section id="section6">
+                                    <h2>Step 6: Create an IAM Role for the S3 Policy</h2>
+                                    An IAM role can be used to allow users or services to assume specific permissions to access S3 buckets. It helps to ensure that only authorized users or services can access the S3 bucket, and data remains secure.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/50.png" alt="" /></div></p>
+                                    1. Create an IAM role (called 'S3-Role') and attach the AmazonS3FullAccess permissions policy. This will allow our EC2 instance to download the file inside the bucket.
+                                    <p><div class="image main"><img src="images/DynamicWeb/34.png" alt="" /></div></p>
+                                    <p>This role will be attached to our Setup Server instance in the next step.</p>
+                                </section>
+                                <section id="section7">
+                                    <h2>Step 7: Deploy the Setup Server</h2>
+                                    We will now launch the EC2 instance setup server. We will utilize this instance to install and configure our application. We'll deploy it in the public subnet for ease of installation.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/51.png" alt="" /></div></p>
+                                    1. Create a key pair. We will use this to SSH into our EC2 instance. 
+                                    <p><div class="image main"><img src="images/WordPress/35.png" alt="" /></div></p>
+                                    2. Change permissions on our key. This will set the read-only permission for the owner of the file, and no permissions for anyone else.
+                                    <p><div class="image main"><img src="images/WordPress/36.png" alt="" /></div></p>
+                                    3. Launch our setup EC2 instance with our three security groups: webserver security group, ALB security group, and SSH security group.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/52.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/53.png" alt="" /></div></p>
+                                    4. SSH into our Setup Server. 
+                                    <p><div class="image main"><img src="images/DynamicWeb2/54.png" alt="" /></div></p>
+                                    5. Update the EC2 instance.
+                                    <p style="font-family: monospace">
+                                        sudo su
+                                        <br>sudo yum update -y</p>
+                                    6. Install Apache.
+                                    <p style="font-family: monospace">
+                                        sudo yum install -y httpd httpd-tools mod_ssl
+                                        <br>sudo systemctl enable httpd 
+                                        <br>sudo systemctl start httpd
+                                    </p>
+                                    7. Install PHP 7.4.
+                                    <p style="font-family: monospace">
+                                        sudo amazon-linux-extras enable php7.4
+                                        <br>sudo yum clean metadata
+                                        <br>sudo yum install php php-common php-pear -y
+                                        <br>sudo yum install php-{cgi,curl,mbstring,gd,mysqlnd,gettext,json,xml,fpm,intl,zip} -y
+                                    </p>
+                                    8. Install MySQL 5.7.
+                                    <p style="font-family: monospace">
+                                        sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+                                        <br>sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+                                        <br>sudo yum install mysql-community-server -y
+                                        <br>sudo systemctl enable mysqld
+                                        <br>sudo systemctl start mysqld
+                                    </p>
+                                    9. Set permissions.
+                                    <p style="font-family: monospace">
+                                        sudo usermod -a -G apache ec2-user
+                                        <br>sudo chown -R ec2-user:apache /var/www
+                                        <br>sudo chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \;
+                                        <br>sudo find /var/www -type f -exec sudo chmod 0664 {} \;
+                                    </p>
+                                    10. Download the FleetCart zip folder from S3 to the HTML directory on the EC2 instance.
+                                    <p style="font-family: monospace">
+                                        sudo aws s3 sync s3://jordancampbell-webserver-files /var/www/html
+                                    </p>
+                                    11. Unzip the FleetCart zip folder.
+                                    <p style="font-family: monospace">
+                                        cd /var/www/html
+                                        <br>sudo unzip FleetCart.zip
+                                    </p>
+                                    12. Move all the files and folder from the FleetCart directory to the HTML directory.
+                                    <p style="font-family: monospace">
+                                        sudo mv FleetCart/* /var/www/html
+                                    </p>
+                                    13. Move all the hidden files from the FleetCart diretory to the HTML directory.
+                                    <p style="font-family: monospace">
+                                        sudo mv FleetCart/.DS_Store /var/www/html
+                                        <br>sudo mv FleetCart/.editorconfig /var/www/html
+                                        <br>sudo mv FleetCart/.env /var/www/html
+                                        <br>sudo mv FleetCart/.env.example /var/www/html
+                                        <br>sudo mv FleetCart/.eslintignore /var/www/html
+                                        <br>sudo mv FleetCart/.eslintrc /var/www/html
+                                        <br>sudo mv FleetCart/.gitignore /var/www/html
+                                        <br>sudo mv FleetCart/.htaccess /var/www/html
+                                        <br>sudo mv FleetCart/.npmrc /var/www/html
+                                        <br>sudo mv FleetCart/.php_cs /var/www/html
+                                        <br>sudo mv FleetCart/.rtlcssrc /var/www/html
+                                    </p>
+                                    14. Delete the FleetCart and FleetCart.zip folder.
+                                    <p style="font-family: monospace">
+                                        sudo rm -rf FleetCart FleetCart.zip
+                                    </p>
+                                    15. Enable mod_rewrite on EC2 Linux, add Apache to group, and then restart the server.
+                                    <p style="font-family: monospace">
+                                        sudo sed -i '/<Directory "\/var\/www\/html">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
+                                            <br>chown apache:apache -R /var/www/html 
+                                            <br>sudo service httpd restart
+                                    </p>
+                                    16. Check if we can access our website through the browser.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/55.png" alt="" /></div></p>
+                                    17. Connect the EC2 instance to our RDS database.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/56.png" alt="" /></div></p>
+                                    18. We have successfully connected to our (currently empty) website.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/57.png" alt="" /></div></p>
+                                </section>
+                                <section id="section8">
+                                    <h2>Step 8: Import the Dummy Data for the Website</h2>
+                                    We will use MySQL Workbench and create a new EC2 instance to import the SQL data for our application into the RDS database. To connect to an AWS RDS instance using MySQL Workbench, we can create a new connection using the "Standard TCP/IP over SSH" method, specifying the appropriate credentials and SSH settings. Once connected, we can manage and administer the RDS instance using MySQL Workbench's graphical interface.
+                                    <br><br>1. Create a new key pair we will use to SSH into a Dummy Server.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/58.png" alt="" /></div></p>
+                                    2. Create the Dummy EC2 instance.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/59.png" alt="" /></div></p>
+                                    3. Create a Dummy security group to allow our RDS instance to connect to the Dummy instance.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/60.png" alt="" /></div></p>
+                                    4. Add the Dummy security group to the RDS instance.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/61.png" alt="" /></div></p>
+                                    5. Connect to the database.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/62.png" alt="" /></div></p>
+                                    6. Import the SQL file for our website into our RDS database.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/63.png" alt="" /></div></p>
+                                    7. We no longer need the Dummy Server or any of the resources we used with it, so we will delete them now.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/64.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/65.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/66.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/DynamicWeb2/67.png" alt="" /></div></p>
+                                    8. Run the following commands in our Setup Server to add the dummy data to our website. This script downloads files from our S3 bucket, unzips them, moves them to the web server's public directory, and performs some cleanup tasks to ensure the web application is in a consistent state.
+                                    <p style="font-family: monospace">
+                                        <br>sudo su
+                                        <br>sudo aws s3 sync s3://jordancampbell-dummy-data-files /home/ec2-user
+                                        <br>sudo unzip dummy.zip
+                                        <br>sudo mv dummy/* /var/www/html/public
+                                        <br>sudo mv -f dummy/.DS_Store /var/www/html/public
+                                        <br>sudo rm -rf /var/www/html/storage/framework/cache/data/cache
+                                        <br>sudo rm -rf dummy dummy.zip
+                                        <br>chown apache:apache -R /var/www/html 
+                                        <br>sudo service httpd restart
+                                    </p>
+                                </section>
+                                <section id="section9">
+                                    <h2>Step 9: Create an AMI</h2>
+                                    Now that we've finished using our Setup Server instance to install and configure our web application, we can stop it and create an Amazon Machine Image (AMI) from it. This AMI can be used to launch new instances with the same configuration and settings as the original instance, making it easier to replicate the web application environment.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/68.png" alt="" /></div></p>
+                                    1. Stop the Setup Server instance. 
+                                    <p><div class="image main"><img src="images/DynamicWeb/61.png" alt="" /></div></p>
+                                    2. Create the AMI.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/69.png" alt="" /></div></p>
+                                </section>
+                                <section id="section10">
+                                    <h2>Step 10: Create an Application Load Balancer</h2>
+                                    An Application Load Balancer (ALB) is a service that routes incoming traffic to multiple targets based on the content of the request, such as the URL or HTTP header. ALBs operate at the application layer (Layer 7) and support features like SSL/TLS termination, health checks, and content-based routing.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/70.png" alt="" /></div></p>
+                                    1. Launch an EC2 instance in each of the private app subnets (AZ1 and AZ2).
+                                    <p><div class="image main"><img src="images/DynamicWeb2/71.png" alt="" /></div></p>
+                                    2. Create a target group. To access the website we installed on the EC2 instances, we will put them in the target group to allow the ALB to route traffic to them.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/72.png" alt="" /></div></p>
+                                    Make sure to add status success codes 301 and 302, so we can redirect traffic from HTTP to HTTPS.
+                                    <p><div class="image main"><img src="images/DynamicWeb/63.png" alt="" /></div></p>
+                                    3. Create the application load balancer.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/73.png" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/alb.tf" target="_blank">Terraform Code: ALB</a></p>
+                                </section>
+                                <section id="section11">
+                                    <h2>Step 11: Register a New Domain Name in Route 53 and Create a Record Set</h2>
+                                    We will create a domain name for our website and use Route 53 as a service that helps people find that website on the internet. It will ensure that people can access the website easily and reliably.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/74.png" alt="" /></div></p>
+                                    1. Create a domain name.
+                                    <p><div class="image main"><img src="images/StaticWebsite/33.png" alt="" /></div></p>
+                                    2. Create a record. Creating a Route 53 alias record for an Application Load Balancer involves mapping the website or application's domain name to the ALB. This directs traffic to the targets behind the ALB. The user must specify the DNS name of the ALB and routing policy when creating the alias record.
+                                    <p><div class="image "><img src="images/DynamicWeb2/75.png" height="500" width="250" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/route-53.tf" target="_blank">Terraform Code: Route 53</a></p>
+                                </section>
+                                <section id="section12">
+                                    <h2>Step 12: Register for an SSL Certificate in AWS Certificate Manager</h2>
+                                    We will use an SSL Certificate to encrypt all communications between the web browser and our webservers. This is also referred to as encryption in transit.
+                                    <p><div class="image main"><img src="images/DynamicWeb/69.png" alt="" /></div></p>
+                                    Currently we are not secure.
+                                    <p><div class="image "><img src="images/WordPress/56.png" width="270" height="50" alt="" /></div></p>
+                                    1. Create a public SSL Certificate in AWS Certificate Manager.
+                                    <p><div class="image main"><img src="images/StaticWebsite/37.png" alt="" /></div></p>
+                                    2. Create DNS records in Amazon Route 53. This is a validation process designed to ensure that only the domain owner can obtain the SSL certificate.
+                                    <p><div class="image main"><img src="images/StaticWebsite/38.png" alt="" /></div></p>
+                                    Our certificate is good to go.
+                                    <p><div class="image main"><img src="images/StaticWebsite/39.png" alt="" /></div></p>
+                                </section>
+                                <section id="section13">
+                                    <h2>Step 13: Create an HTTPS Listener</h2>
+                                    Using the SSL Certificate we just registered, we will secure our website. We will create an HTTPS (SSL) listener for our ALB. This involves configuring the ALB to handle SSL/TLS encryption for incoming requests and requires associating the SSL certificate we created with the ALB's listener configuration. Once configured, the ALB can decrypt and forward incoming HTTPS requests to the appropriate backend target group.
+                                    <br><br>1. Add listener.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/76.png" alt="" /></div></p>
+                                    2. Redirect traffic to the HTTPS listener from the HTTP listener.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/77.png" alt="" /></div></p>
+                                    3. Check that our website is now secure.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/77b.png" alt="" /></div></p>
+                                    <p>Our website doesn't look quite right because we need to update the settings for our domain name in the website's configuration file. We must next SSH into our EC2 instance and update the configuration file.</p>
+                                </section>
+                                <section id="section14">
+                                    <h2>Step 14: SSH into an Instance in the Private Subnet</h2>
+                                    We will now SSH into an EC2 instance in our private subnet to update the configuration file so that our website can load properly. To do so, we'll first have to launch a bastion host. 
+                                    <br><br>A bastion host is a dedicated server instance used to securely connect to other servers within a private network. It provides an additional layer of security by acting as a gateway that provides access control for remote connections.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/78.png" alt="" /></div></p>
+                                    1. Create the bastion host in the public subnet.
+                                    <p><div class="image main"><img src="images/DynamicWeb/72.png" alt="" /></div></p>
+                                    2. We will run the command that will allow us to SSH from the bastion host to any instance in the private subnet.
+                                    <p><div class="image main"><img src="images/WordPress/59.png" alt="" /></div></p>
+                                    3. SSH into our bastion host.
+                                    <p><div class="image main"><img src="images/DynamicWeb/73a.png" alt="" /></div></p>
+                                    4. SSH into the private webserver in AZ1. We will do this by using the instance's private IP address.
+                                    <p><div class="image main"><img src="images/WordPress/61.png" alt="" /></div></p>
+                                    5. Edit the .env file with our updated app url.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/81.png" alt="" /></div></p>
+                                    7. After restarting the Apache server, our website should properly function again.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/83.png" alt="" /></div></p>
+                                </section>
+                                <section id="section15">
+                                    <h2>Step 15: Create Another AMI</h2>
+                                    Since we made changes to the configuration files on our instance, we will create a new AMI to reflect those changes.
+                                    <br><br>1. Create a new AMI.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/84.png" alt="" /></div></p>
+                                    2. Check that the AMI has a snapshot. A snapshot is a backup of an EC2 instance that contains all the information needed to launch a new instance with the same configuration as the original. When a snapshot is created, a copy of the instance's data is stored in S3.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/85.png" alt="" /></div></p>
+                                </section>
+                                <section id="section16">
+                                    <h2>Step 16: Create an Auto Scaling Group</h2>
+                                    An Auto Scaling Group (ASG) is a group of EC2 instances that can automatically scale up or down based on demand. This helps maintain the required number of instances for the application to handle variable traffic loads without downtime or performance degradation.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/86.png" alt="" /></div></p>
+                                    1. Create a launch template. This contains the configurations of our AMI that the ASG will use to launch new instances in the private app subnets.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/89.png" alt="" /></div></p>
+                                    2. Create the auto scaling group.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/87.png" alt="" /></div></p>
+                                    Add an SNS topic to the ASG. This will notify subscribers (we'll get notified via email) when events are triggered, such as when instances launch, terminate, fail to launch, and fail to terminate.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/88.png" alt="" /></div></p>
+                                    We now have two instances running in our ASG, one in AZ1 and one in AZ2.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/90.png" alt="" /></div></p>
+                                    4. Check that these instances have been added to our target group.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/91.png" alt="" /></div></p>
+                                    Our dynamic website is complete and running!
+                                    <p><div class="image main"><img src="images/DynamicWeb2/92.png" alt="" /></div></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/sns.tf" target="_blank">Terraform Code: SNS</a></p>
+                                    <p><a href="https://github.com/princessjrc/dynamic-web-terraform-project/blob/main/asg.tf" target="_blank">Terraform Code: ASG</a></p>
+                                </section>
+                                <section id="section17">
+                                    <h2>Step 17: Terminate Resources</h2>
+                                    To complete this project, we will delete the resources we created to avoid unwanted charges. This includes our ASG, launch templates, ALB, target group, RDS, bastion host, security groups, NAT gateways, VPC, elastic IPs, S3 buckets, and record sets.
+                                    <br><br>We will not delete our newest AMI version, nor our database snapshot. We will use these when we want to launch our app using Terraform.
+                                    <p><div class="image main"><img src="images/WordPress/delete1.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete2.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete3.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete4.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete6.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete8.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete9.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete10.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete11.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/WordPress/delete12.png" alt="" /></div></p>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
