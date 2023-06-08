@@ -1,0 +1,799 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Project: Web App (+IaC, Containerization, & CI/CD Pipelines)</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Cloud Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: Web App (+IaC, Containerization, & CI/CD Pipelines)</h1>
+									<p>
+                                        This project covers how to deploy a dynamic web application in AWS, using core AWS services like VPC networks (public and private subnets, NAT gateways, security groups, etc.), RDS databases (MySQL), S3 buckets, application load balancers (ALBs), auto scaling groups (ASGs),
+                                        ECR and ECS, Route 53, Secrets Manager and more. This project also includes containerization, such as building a Docker image and pushing it to Amazon ECR. It also includes deploying an application in AWS with infrastucture as code (IaC) using Terraform. Finally, this project covers 
+                                        continuous integration and continuous delivery (CI/CD) pipelines using GitHub Actions. Project provided by <a href="https://www.aosnote.com/products/deploy-a-dynamic-website-on-aws" target="_blank">AOSNote</a>.
+                                    </p>
+                                    <a href="https://github.com/princessjrc/github-actions-terraform-ecs-project" target="_blank"><b>Project Code on GitHub</b></a>
+									</header>
+								<div class="image main"><img src="images/GitHub-Actions/pipeline.drawio.png" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Getting Set Up</a></li>
+                                        <li><a href="#section2">Step 2: Create the GitHub Repository</a></li>
+                                        <li><a href="#section3">Step 3: Add Terraform Code</a></li>
+                                        <li><a href="#section4">Step 4: Create the Terraform Backend</a></li>
+                                        <li><a href="#section5">Step 5: Create Secrets in AWS Secrets Manager</a></li>
+                                        <li><a href="#section6">Step 6: Create GitHub Personal Access Token and Repository Secrets</a></li>
+                                        <li><a href="#section7">Step 7: Create GitHub Actions Workflow File</a></li>
+                                        <li><a href="#section8">Step 8: Create a GitHub Actions Job to Configure AWS Credentials</a></li>
+                                        <li><a href="#section9">Step 9: Create a GitHub Actions Job to Deploy AWS Infrastructure</a></li>
+                                        <li><a href="#section10">Step 10: Create a GitHub Actions Job to Create an Amazon ECR Repository</a></li>
+                                        <li><a href="#section11">Step 11: Create a GitHub Actions Job to Start a Self-Hosted Runner</a></li>
+                                        <li><a href="#section12">Step 12: Create a GitHub Actions Job to Build and Push a Docker Image to Amazon ECR</a></li>
+                                        <li><a href="#section13">Step 13: Create a GitHub Actions Job to Export the Environment Variables into the S3 Bucket</a></li>
+                                        <li><a href="#section14">Step 14: Create a GitHub Actions Job to Migrate Data into the RDS Database with Flyway</a></li>
+                                        <li><a href="#section15">Step 15: Create a GitHub Actions Job to Stop the Self-Hosted Runner</a></li>
+                                        <li><a href="#section16">Step 16: Create a GitHub Actions Job to Create a New ECS Task Definition Revision</a></li>
+                                        <li><a href="#section17">Step 17: Create a GitHub Actions Job to Restart the ECS Fargate Service</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                <h2>Step 1: Getting Set Up</h2>
+                                <p>
+                                    This project requires some installations and tools, so to begin, we will set up some things on our local computer. 
+								</p>
+                                <p>
+                                    1. Install Terraform.
+                                    <br>2. Sign up for a GitHub account.
+                                    <br>3. Install Git.
+                                    <br>4. Generate a key pair for secure connections (Mac). This is so we can clone our GitHub repository.
+                                    <p style="font-family: monospace">
+                                        ssh-keygen -b 4096 -t rsa</p>
+                                    5. Add public SSH key to GitHub.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/1.png" alt="" /></div></p>
+                                    6. Install Visual Studio Code.
+                                    <br>7. Install Terraform extensions (Terraform and Hashicorp Terraform).
+                                    <br>8. Install AWS CLI.
+                                    <br>9. Create an IAM user in AWS.
+                                    <br>10. Generate an access key for the IAM user. This is so the user can have programmatic access to the AWS account.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/2.png" alt="" /></div></p>
+                                    <br>11. Create a profile. We will do this by running the AWS configure command and providing the access key credentials we just created.
+                                    <p style="font-family: monospace">
+                                        aws configure</p>
+                                </p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Create the GitHub Repository</h2>
+                                    GitHub repositories are storage spaces where we can store and manage our code, collaborate with others, and track changes using Git version control. Each repository contains files, branches, and commit history.
+                                    <br><br><p>1. Create the repository.</p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/3.png" alt="" /></div></p>
+                                    2. Clone the Git repository to our computer. This will create a local copy of our remote Git repository.
+                                    <p style="font-family: monospace">
+                                        git clone < ssh clone url ></p>
+                                    <p>3. Open the cloned repository in VS Code, and then update the .gitignore file so that the .tfvars extensions are removed from this file. This is so that GitHub will commit our .tfvars file into our repository, which we need it to do. Otherwise it will break our pipeline as we build it.</p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Add Terraform Code</h2>
+                                    Terraform allows us to define and manage our infrastructure as code (IaC), automating the creation, modification, and destruction of resources across different cloud providers and environments.
+                                    <br><br><p><a href="https://github.com/princessjrc/github-actions-terraform-ecs-project/tree/main/iac" target="_blank"><b>Terraform Code</b></a></p>
+                                    With this code we will build our:
+                                    <ul>
+                                    <li>VPC
+                                        <ul>
+                                            <li>Internet Gateways</li>
+                                            <li>Public Subnets</li>
+                                            <li>Private Subnets</li>
+                                            <li>Route Tables</li>
+                                        </ul>
+                                    </li>
+                                    <li>NAT Gateways</li>
+                                    <li>Security Groups</li>
+                                    <li>RDS Database</li>
+                                    <li>Application Load Balancer</li>
+                                    <li>S3 Bucket</li>
+                                    <li>ECS Fargate Service</li>
+                                    <li>Auto Scaling Group</li>
+                                    <li>Route 53 Record Set</li>
+                                    <li>AWS Certificate</li>
+                                    </ul>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Create the Terraform Backend</h2>
+                                    The AWS backend in Terraform is used to store the state file remotely. It can be configured with either Amazon S3 or Amazon DynamoDB or both. S3 provides durable storage, while DynamoDB acts as a locking mechanism to prevent concurrent modifications.
+                                    <br><br>1. Create an S3 bucket to store the Terraform state. It will be used to track and manage changes to our infrastructure.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/4.png" alt="" /></div></p>
+                                    2. Create a DynamoDB table to lock the Terraform state. It will help prevent conflicts when multiple people or processes try to make changes to the same Terraform state file at the same time.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/5.png" alt="" /></div></p>
+                                    3. Update the Terraform backend file. We will fill in this file with the information of the S3 bucket and DynamoDB table we just created.
+                                    <br><br><p><a href="https://github.com/princessjrc/github-actions-terraform-ecs-project/blob/main/iac/backend.tf" target="_blank"><b>Terraform Backend</b></a></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Create Secrets in AWS Secrets Manager</h2>
+                                    AWS Secrets Manager is a service that will help us securely store and manage sensitive information such database credentials and other secrets used by our applications.
+                                    <br><br>1. Go to AWS Secrets Manager and choose store a new secret. Our Secrets Keys are as follows:
+                                    <li>rds_db_name</li>
+                                    <li>username</li>
+                                    <li>password</li>
+                                    <li>ecr_registry</li>
+                                    <br>2. Add our values and store the secrets.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/6.png" alt="" /></div></p>
+                                </section>
+                                <section id="section6">
+                                    <h2>Step 6: Create GitHub Personal Access Token and Repository Secrets</h2>
+                                    1. Create GitHub personal access token. Docker will use this to clone our application's code repository when we build our Docker image.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/7.png" alt="" /></div></p>
+                                    2. Create GitHub repository secrets. These secrets will be used by the GitHub Actions jobs that will build our CI/CD pipeline.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/8.png" alt="" /></div></p>
+                                    <li>AWS_ACCESS_KEY_ID = programmatic-user's access key ID</li>
+                                    <li>AWS_SECRET_ACCESS_KEY = programmatic-user's access key</li>
+                                    <li>ECR_REGISTRY = ECR registry name (ID to .com)</li>
+                                    <li>PERSONAL_ACCESS_TOKEN = GitHub personal access token</li>
+                                    <li>RDS_DB_NAME = RDS database name</li>
+                                    <li>RDS_DB_PASSWORD = RDS database password</li>
+                                    <li>RDS_DB_USERNAME = RDS database username</li><br>
+                                </section>
+                                <section id="section7">
+                                    <h2>Step 7: Create GitHub Actions Workflow File</h2>
+                                    Workflow files are configuration files used in CI/CD systems to automate steps and actions for building, testing, and deploying software when specific events occur. They streamline the software development process by defining a predefined workflow and automating tasks.
+                                    <br><br>A workflow is a configurable automated process made up of one or more jobs. We must create a YAML file to define our workflow configuration.
+                                    <br><br>1. Create the workflow file. It must be put in a folder called:
+                                    <p style="font-family: monospace">
+                                        .github/workflows</p>
+                                    2. We will then call the file:
+                                    <p style="font-family: monospace">
+                                        deploy-pipeline.yml</p>
+                                    <p>This is the workflow file we will use to build our CI/CD pipeline.</p>
+                                </section>
+                                <section id="section8">
+                                    <h2>Step 8: Create a GitHub Actions Job to Configure AWS Credentials</h2>
+                                    The first job in our pipeline will be responsible for configuring our IAM credentials to verify our access to AWS and authorize our GitHub Actions job to create new resources in our AWS account.
+                                    <pre>
+                                        <code>
+name: Deploy Pipeline
+
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: us-east-1
+  GITHUB_USERNAME: princessjrc
+  REPOSITORY_NAME: application-codes
+  WEB_FILE_ZIP: rentzone.zip
+  WEB_FILE_UNZIP: rentzone
+  FLYWAY_VERSION: 9.8.1
+  TERRAFORM_ACTION: apply
+
+jobs:
+  # Configure AWS credentials 
+  configure_aws_credentials:
+    name: Configure AWS Credentials
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+                                        </code>
+                                    </pre>
+                                    <p><a href="https://github.com/aws-actions/configure-aws-credentials" target="_blank">aws-actions/configure-aws-credentials</a> -- Configure your AWS credentials and region environment variables for use in other GitHub Actions.</p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/9.png" alt="" /></div></p>
+                                </section>
+                                <section id="section9">
+                                    <h2>Step 9: Create a GitHub Actions Job to Deploy AWS Infrastructure</h2>
+                                    In this job, we will use Terraform and the ubuntu-hosted GitHub runner to build our infrastucture in AWS.
+                                    <br><br>A GitHub runner is a software component that executes automated tasks and actions defined in GitHub workflows. This runner will run on GitHub-hosted resources, enabling us to build, test, and deploy software within the GitHub Actions CI/CD platform.
+<pre>
+    <code>
+        # Build AWS infrastructure
+        deploy_aws_infrastructure:
+          name: Build AWS Infrastructure
+          needs: configure_aws_credentials
+          runs-on: ubuntu-latest
+          steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+      
+            - name: Set up Terraform
+              uses: hashicorp/setup-terraform@v2
+              with:
+                terraform_version: 1.1.7
+      
+            - name: Run Terraform initialize
+              working-directory: ./iac
+              run: terraform init
+      
+            - name: Run Terraform apply/destroy
+              working-directory: ./iac
+              run: terraform ${{ env.TERRAFORM_ACTION }} -auto-approve
+      
+            - name: Get Terraform output image name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                IMAGE_NAME_VALUE=$(terraform output -raw image_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "IMAGE_NAME=$IMAGE_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output domain name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                DOMAIN_NAME_VALUE=$(terraform output -raw domain_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "DOMAIN_NAME=$DOMAIN_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output RDS endpoint
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                RDS_ENDPOINT_VALUE=$(terraform output -raw rds_endpoint | grep -Eo "^[^:]+" | tail -n 1)
+                echo "RDS_ENDPOINT=$RDS_ENDPOINT_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output image tag
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                IMAGE_TAG_VALUE=$(terraform output -raw image_tag | grep -Eo "^[^:]+" | tail -n 1)
+                echo "IMAGE_TAG=$IMAGE_TAG_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output private data subnet az1 id
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                PRIVATE_DATA_SUBNET_AZ1_ID_VALUE=$(terraform output -raw private_data_subnet_az1_id | grep -Eo "^[^:]+" | tail -n 1)
+                echo "PRIVATE_DATA_SUBNET_AZ1_ID=$PRIVATE_DATA_SUBNET_AZ1_ID_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output runner security group id
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                RUNNER_SECURITY_GROUP_ID_VALUE=$(terraform output -raw runner_security_group_id | grep -Eo "^[^:]+" | tail -n 1)
+                echo "RUNNER_SECURITY_GROUP_ID=$RUNNER_SECURITY_GROUP_ID_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output task definition name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                TASK_DEFINITION_NAME_VALUE=$(terraform output -raw task_definition_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "TASK_DEFINITION_NAME=$TASK_DEFINITION_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output ecs cluster name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                ECS_CLUSTER_NAME_VALUE=$(terraform output -raw ecs_cluster_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "ECS_CLUSTER_NAME=$ECS_CLUSTER_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output ecs service name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                ECS_SERVICE_NAME_VALUE=$(terraform output -raw ecs_service_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "ECS_SERVICE_NAME=$ECS_SERVICE_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output environment file name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                ENVIRONMENT_FILE_NAME_VALUE=$(terraform output -raw environment_file_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "ENVIRONMENT_FILE_NAME=$ENVIRONMENT_FILE_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Get Terraform output env file bucket name
+              if: env.TERRAFORM_ACTION == 'apply'
+              working-directory: ./iac
+              run: |
+                ENV_FILE_BUCKET_NAME_VALUE=$(terraform output -raw env_file_bucket_name | grep -Eo "^[^:]+" | tail -n 1)
+                echo "ENV_FILE_BUCKET_NAME=$ENV_FILE_BUCKET_NAME_VALUE" >> $GITHUB_ENV
+      
+            - name: Print GITHUB_ENV contents
+              run: cat $GITHUB_ENV
+      
+          outputs:
+            terraform_action: ${{ env.TERRAFORM_ACTION }}
+            image_name: ${{ env.IMAGE_NAME }}
+            domain_name: ${{ env.DOMAIN_NAME }}
+            rds_endpoint: ${{ env.RDS_ENDPOINT }}
+            image_tag: ${{ env.IMAGE_TAG }}
+            private_data_subnet_az1_id: ${{ env.PRIVATE_DATA_SUBNET_AZ1_ID }}
+            runner_security_group_id: ${{ env.RUNNER_SECURITY_GROUP_ID }}
+            task_definition_name: ${{ env.TASK_DEFINITION_NAME }}
+            ecs_cluster_name: ${{ env.ECS_CLUSTER_NAME }}
+            ecs_service_name: ${{ env.ECS_SERVICE_NAME }}
+            environment_file_name: ${{ env.ENVIRONMENT_FILE_NAME }}
+            env_file_bucket_name: ${{ env.ENV_FILE_BUCKET_NAME }}
+    </code>
+</pre>
+                                <p><a href="https://github.com/actions/checkout" target="_blank">actions/checkout</a> -- This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.</p>
+                                <p><a href="https://github.com/hashicorp/setup-terraform" target="_blank">hashicorp/setup-terraform</a> -- The hashicorp/setup-terraform action is a JavaScript action that sets up Terraform CLI in your GitHub Actions workflow.</p>
+                                <p><div class="image main"><img src="images/GitHub-Actions/10.png" alt="" /></div></p>
+                                </section>
+                                <section id="section10">
+                                    <h2>Step 10: Create a GitHub Actions Job to Create an Amazon ECR Repository</h2>
+                                    In this job, we will create a repository in Amazon ECR which we will use to store our Docker image. 
+                                    <pre>
+                                        <code>
+  # Create ECR repository
+  create_ecr_repository:
+    name: Create ECR Repository
+    needs: 
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Check if ECR repository exists
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        run: |
+          result=$(aws ecr describe-repositories --repository-names "${{ env.IMAGE_NAME }}" | jq -r '.repositories[0].repositoryName')
+          echo "repo_name=$result" >> $GITHUB_ENV
+        continue-on-error: true
+
+      - name: Create ECR repository
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        if: env.repo_name != env.IMAGE_NAME
+        run: |
+          aws ecr create-repository --repository-name ${{ env.IMAGE_NAME }}
+                                        </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/11.png" alt="" /></div></p>
+                                </section>
+                                <section id="section11">
+                                    <h2>Step 11: Create a GitHub Actions Job to Start a Self-Hosted Runner</h2>
+                                    A self-hosted runner is a user-managed GitHub runner that runs on our own infrastructure. It executes workflows and actions defined in GitHub Actions, providing flexibility and control over the execution environment.
+                                    <br><br>We are going to start a self-hosted EC2 runner in our private data subnet, first to build our Docker image and push the image to the Amazon ECR repository we just created, and second to run our database migration with Flyway.
+                                    <br><br>1. Create a key pair. We will use this to SSH into our EC2 instance.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/12.png" alt="" /></div></p>
+                                    2. Launch an EC2 instance in the public subnet.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/13.png" alt="" /></div></p>
+                                    3. SSH into the EC2 instance.
+                                    <p style="font-family: monospace">
+                                        ssh -i < key pair > ec2-user@< public-ip address ></p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/14.png" alt="" /></div></p>
+                                    4. Install Docker and Git on the instance.
+                                    <pre>
+                                        <code>
+sudo yum update -y && \
+
+sudo yum install docker -y && \
+
+sudo yum install git -y && \
+
+sudo yum install libicu -y && \
+
+sudo systemctl enable docker
+                                        </code>
+                                    </pre>
+                                    5. Create an AMI. This is so our GitHub Actions job can use this AMI to start our self-hosted runner.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/15.png" alt="" /></div></p>
+                                    6. Terminate the EC2 instance.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/16.png" alt="" /></div></p>
+                                    7. Now we will create the GitHub Actions job that we will use to start the self-hosted runner in the private data subnet.
+                                    <pre>
+                                        <code>
+  # Start self-hosted EC2 runner
+  start_runner:
+    name: Start Self-Hosted EC2 Runner
+    needs: 
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for running EC2 runner
+        run: |
+          instances=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=ec2-github-runner" "Name=instance-state-name,Values=running" --query 'Reservations[].Instances[].InstanceId' --output text)
+
+          if [ -n "$instances" ]; then
+            echo "runner-running=true" >> $GITHUB_ENV
+          else
+            echo "runner-running=false" >> $GITHUB_ENV
+          fi
+
+      - name: Start EC2 runner
+        if: env.runner-running != 'true'
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          ec2-image-id: ami-02706218ec8472c8f
+          ec2-instance-type: t2.micro
+          subnet-id: ${{ needs.deploy_aws_infrastructure.outputs.private_data_subnet_az1_id }}
+          security-group-id: ${{ needs.deploy_aws_infrastructure.outputs.runner_security_group_id }}
+          aws-resource-tags: > 
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+                                        </code>
+                                    </pre>
+                                    <p><a href="https://github.com/machulav/ec2-github-runner" target="_blank">machulav/ec2-github-runner</a> -- Start your EC2 self-hosted runner right before you need it. Run the job on it. Finally, stop it when you finish. And all this automatically as a part of your GitHub Actions workflow.</p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/17.png" alt="" /></div></p>
+                                    Now our self-hosted runner is running in our private subnet. We can check it both on the AWS Management Console and on GitHub:
+                                    <p><div class="image main"><img src="images/GitHub-Actions/18.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/19.png" alt="" /></div></p>
+                                </section>
+                                <section id="section12">
+                                    <h2>Step 12: Create a GitHub Actions Job to Build and Push a Docker Image to Amazon ECR</h2>
+                                    We will build the Docker image for our application and push it to the Amazon ECR repository we created.
+                                    <br><br>1. Set up a GitHub repository to store our application's code.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/21.png" alt="" /></div></p>
+                                    2. Clone the repository to our computer.
+                                    <p style="font-family: monospace">
+                                        git clone < ssh clone url ></p>
+                                    3. Add our code to the local repository and push it back to GitHub.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/20.png" alt="" /></div></p>
+                                    4. Create the Dockerfile that our build job will use to build the Docker image for our application.
+                                    <br><br><p><a href="https://github.com/princessjrc/github-actions-terraform-ecs-project/blob/main/Dockerfile" target="_blank"><b>Dockerfile Code</b></a></p>
+                                    In summary, this Dockerfile sets up an environment with Apache, PHP, MySQL, and other dependencies needed to run a web application. It clones our GitHub repository, extracts the application code, modifies the configuration, and sets permissions before starting Apache as the entrypoint for the container.
+                                    <br><br>5. Create the AppServiceProvider.php file. Our application will use this file to redirect HTTP traffic to HTTPS.
+                                    <br><br><p><a href="https://github.com/princessjrc/github-actions-terraform-ecs-project/blob/main/AppServiceProvider.php" target="_blank"><b>AppServiceProvider.php File</b></a></p>
+                                    6. Now we will create the job to build and push our Docker image into Amazon ECR.
+                                    <pre>
+                                      <code>
+  # Build and push Docker image to ECR
+  build_and_push_image:
+    name: Build and Push Docker Image to ECR
+    needs:
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+      - create_ecr_repository
+      - start_runner
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        env:
+          DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.outputs.domain_name }}
+          RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.outputs.rds_endpoint }}
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+          IMAGE_TAG: ${{ needs.deploy_aws_infrastructure.outputs.image_tag }}
+        run: |
+          docker build \
+          --build-arg PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} \
+          --build-arg GITHUB_USERNAME=${{ env.GITHUB_USERNAME }} \
+          --build-arg REPOSITORY_NAME=${{ env.REPOSITORY_NAME }} \
+          --build-arg WEB_FILE_ZIP=${{ env.WEB_FILE_ZIP }} \
+          --build-arg WEB_FILE_UNZIP=${{ env.WEB_FILE_UNZIP }} \
+          --build-arg DOMAIN_NAME=${{ env.DOMAIN_NAME }} \
+          --build-arg RDS_ENDPOINT=${{ env.RDS_ENDPOINT }} \
+          --build-arg RDS_DB_NAME=${{ secrets.RDS_DB_NAME }} \
+          --build-arg RDS_DB_USERNAME=${{ secrets.RDS_DB_USERNAME }} \
+          --build-arg RDS_DB_PASSWORD=${{ secrets.RDS_DB_PASSWORD }} \
+          -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+
+      - name: Retag Docker image
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        run: |
+          docker tag ${{ env.IMAGE_NAME }} ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Push Docker Image to Amazon ECR
+        env:
+          IMAGE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.image_name }}
+        run: |
+          docker push ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+                                      </code>
+                                    </pre>
+                                    <p><a href="https://github.com/aws-actions/amazon-ecr-login" target="_blank">aws-actions/amazon-ecr-login</a> -- Logs in the local Docker client to one or more Amazon ECR Private registries or an Amazon ECR Public registry.</p>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/22.png" alt="" /></div></p>
+                                </section>
+                                <section id="section13">
+                                    <h2>Step 13: Create a GitHub Actions Job to Export the Environment Variables into the S3 Bucket</h2>
+                                    We will now build a job that will store all the arguments we use to build the Docker image in a file. It will copy the file into an S3 bucket so that the ECS Fargate containers can reference the variables we stored in the file.
+                                    <pre>
+                                      <code>
+  # Create environment file and export to S3 
+  export_env_variables:
+    name: Create Environment File and Export to S3 
+    needs:
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+      - start_runner
+      - build_and_push_image
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Export environment variable values to file
+        env:
+          DOMAIN_NAME: ${{ needs.deploy_aws_infrastructure.outputs.domain_name }}
+          RDS_ENDPOINT: ${{ needs.deploy_aws_infrastructure.outputs.rds_endpoint }}
+          ENVIRONMENT_FILE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.environment_file_name }}
+        run: |
+          echo "PERSONAL_ACCESS_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }}" > ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "GITHUB_USERNAME=${{ env.GITHUB_USERNAME }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "REPOSITORY_NAME=${{ env.REPOSITORY_NAME }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "WEB_FILE_ZIP=${{ env.WEB_FILE_ZIP }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "WEB_FILE_UNZIP=${{ env.WEB_FILE_UNZIP }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "DOMAIN_NAME=${{ env.DOMAIN_NAME }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "RDS_DB_NAME=${{ secrets.RDS_DB_NAME }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "RDS_DB_USERNAME=${{ secrets.RDS_DB_USERNAME }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+          echo "RDS_DB_PASSWORD=${{ secrets.RDS_DB_PASSWORD }}" >> ${{ env.ENVIRONMENT_FILE_NAME }}
+
+      - name: Upload environment file to S3
+        env:
+          ENVIRONMENT_FILE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.environment_file_name }}
+          ENV_FILE_BUCKET_NAME: ${{ needs.deploy_aws_infrastructure.outputs.env_file_bucket_name }}
+        run: aws s3 cp ${{ env.ENVIRONMENT_FILE_NAME }} s3://${{ env.ENV_FILE_BUCKET_NAME }}/${{ env.ENVIRONMENT_FILE_NAME }}
+                                      </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/23.png" alt="" /></div></p>
+                                </section>
+                                <section id="section14">
+                                    <h2>Step 14: Create a GitHub Actions Job to Migrate Data into the RDS Database with Flyway</h2>
+                                    In this job, we will use Flyway to migrate the SQL data for our application into the RDS database.
+                                    <br><br>1. Open our project folder in VS Code and create a new folder called 'sql'.
+                                    <br><br>2. Add the SQL script we want to migrate into our to our RDS database to our new folder.
+                                    <br><br><p><a href="https://github.com/princessjrc/github-actions-terraform-ecs-project/tree/main/sql" target="_blank"><b>SQL Folder</b></a></p>
+                                    3. We will use Flyway to transfer the SQL data for our application into our RDS database. This involves setting up Flyway on our self-hosted runner and using it to move the data into our RDS database.
+                                    <pre>
+                                      <code>
+  # Migrate data into RDS database with Flyway
+  migrate_data:
+    name: Migrate Data into RDS Database with Flyway
+    needs:
+      - deploy_aws_infrastructure
+      - start_runner
+      - build_and_push_image
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download Flyway
+        run: |
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/${{ env.FLYWAY_VERSION }}/flyway-commandline-${{ env.FLYWAY_VERSION }}-linux-x64.tar.gz | tar xvz && sudo ln -s `pwd`/flyway-${{ env.FLYWAY_VERSION }}/flyway /usr/local/bin 
+
+      - name: Remove the placeholder (sql) directory
+        run: |
+          rm -rf flyway-${{ env.FLYWAY_VERSION }}/sql/
+
+      - name: Copy the sql folder into the Flyway sub-directory
+        run: |
+          cp -r sql flyway-${{ env.FLYWAY_VERSION }}/
+
+      - name: Run Flyway migrate command
+        env:
+          FLYWAY_URL: jdbc:mysql://${{ needs.deploy_aws_infrastructure.outputs.rds_endpoint }}:3306/${{ secrets.RDS_DB_NAME }}
+          FLYWAY_USER: ${{ secrets.RDS_DB_USERNAME }}
+          FLYWAY_PASSWORD: ${{ secrets.RDS_DB_PASSWORD }}
+          FLYWAY_LOCATION: filesystem:sql
+        working-directory: ./flyway-${{ env.FLYWAY_VERSION }}
+        run: |
+          flyway -url=${{ env.FLYWAY_URL }} \
+            -user=${{ env.FLYWAY_USER }} \
+            -password=${{ env.FLYWAY_PASSWORD }} \
+            -locations=${{ env.FLYWAY_LOCATION }} migrate
+                                      </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/24.png" alt="" /></div></p>
+                                </section>
+                                <section id="section15">
+                                    <h2>Step 15: Create a GitHub Actions Job to Stop the Self-Hosted Runner</h2>
+                                    This job in our pipeline will be used to terminate the self-hosted runner. We will no longer need it once we have used it to build our Docker image and migrate the data for our application to the RDS database.
+                                    <br><br>1. Terminate the self-hosted runner currently running in the Management Console. The new self-hosted runner will be created when our pipeline runs, and the job we are about to create will terminate the runner once it has completed the tasks it was created for.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/25.png" alt="" /></div></p>
+                                    2. Create the job that will stop the self-hosted EC2 runner.
+                                    <pre>
+                                      <code>
+  # Stop the self-hosted EC2 runner
+  stop_runner:
+    name: Stop Self-Hosted EC2 Runner
+    needs:
+      - configure_aws_credentials
+      - deploy_aws_infrastructure
+      - start_runner
+      - build_and_push_image
+      - export_env_variables
+      - migrate_data
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy' && always() 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          label: ${{ needs.start_runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start_runner.outputs.ec2-instance-id }}
+                                      </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/26.png" alt="" /></div></p>
+                                </section>
+                                <section id="section16">
+                                    <h2>Step 16: Create a GitHub Actions Job to Create a New ECS Task Definition Revision</h2>
+                                    In this job, we will update the task definition for the ECS service hosting our application with the new image we pushed to Amazon ECR.
+                                    <pre>
+                                      <code>
+  # Create new task definition revision
+  create_td_revision:
+    name: Create New Task Definition Revision
+    needs: 
+      - configure_aws_credentials
+      - deploy_aws_infrastructure 
+      - create_ecr_repository
+      - start_runner
+      - build_and_push_image
+      - export_env_variables
+      - migrate_data
+      - stop_runner
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create new task definition revision
+        env:
+          ECS_FAMILY: ${{ needs.deploy_aws_infrastructure.outputs.task_definition_name }}
+          ECS_IMAGE: ${{ secrets.ECR_REGISTRY }}/${{ needs.deploy_aws_infrastructure.outputs.image_name }}:${{ needs.deploy_aws_infrastructure.outputs.image_tag }}
+        run: |
+          # Get existing task definition
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ env.ECS_FAMILY }})
+
+          # update the existing task definition by performing the following actions:
+          # 1. Update the `containerDefinitions[0].image` to the new image we want to deploy
+          # 2. Remove fields from the task definition that are not compatibile with `register-task-definition` --cli-input-json
+          NEW_TASK_DEFINITION=$(echo "$TASK_DEFINITION" | jq --arg IMAGE "${{ env.ECS_IMAGE }}" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)')
+
+          # Register the new task definition and capture the output as JSON
+          NEW_TASK_INFO=$(aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEFINITION")
+
+          # Grab the new revision from the output
+          NEW_TD_REVISION=$(echo "$NEW_TASK_INFO" | jq '.taskDefinition.revision')
+
+          # Set the new revision as an environment variable
+          echo "NEW_TD_REVISION=$NEW_TD_REVISION" >> $GITHUB_ENV
+
+    outputs:
+      new_td_revision: ${{ env.NEW_TD_REVISION }}
+                                      </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/27.png" alt="" /></div></p>
+                                </section>
+                                <section id="section17">
+                                    <h2>Step 17: Create a GitHub Actions Job to Restart the ECS Fargate Service</h2>
+                                    Finally, we will restart the ECS service and force it to use the latest task definition revision we just created.
+                                    <pre>
+                                      <code>
+  # Restart ECS Fargate service
+  restart_ecs_service:
+    name: Restart ECS Fargate Service
+    needs: 
+      - configure_aws_credentials
+      - deploy_aws_infrastructure 
+      - create_ecr_repository
+      - start_runner
+      - build_and_push_image
+      - export_env_variables
+      - migrate_data
+      - stop_runner
+      - create_td_revision
+    if: needs.deploy_aws_infrastructure.outputs.terraform_action != 'destroy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update ECS Service
+        env:
+          ECS_CLUSTER_NAME: ${{ needs.deploy_aws_infrastructure.outputs.ecs_cluster_name }}
+          ECS_SERVICE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.ecs_service_name }}
+          TD_NAME: ${{ needs.deploy_aws_infrastructure.outputs.task_definition_name }}
+        run: |
+          aws ecs update-service --cluster ${{ env.ECS_CLUSTER_NAME }} --service ${{ env.ECS_SERVICE_NAME }} --task-definition ${{ env.TD_NAME }}:${{ needs.create_td_revision.outputs.new_td_revision }} --force-new-deployment
+
+      - name: Wait for ECS service to become stable
+        env:
+          ECS_CLUSTER_NAME: ${{ needs.deploy_aws_infrastructure.outputs.ecs_cluster_name }}
+          ECS_SERVICE_NAME: ${{ needs.deploy_aws_infrastructure.outputs.ecs_service_name }}
+        run: |
+          aws ecs wait services-stable --cluster ${{ env.ECS_CLUSTER_NAME }} --services ${{ env.ECS_SERVICE_NAME }}
+                                      </code>
+                                    </pre>
+                                    <p><div class="image main"><img src="images/GitHub-Actions/28.png" alt="" /></div></p>
+                                    Now we can use our Route 53 domain name to access our web application.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/29.png" alt="" /></div></p>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
