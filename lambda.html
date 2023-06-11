@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Lambda + Python</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Cloud Projects</a></li>
+							<li><a href="dataanalyst.html">Data Analyst Projects</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Project: Automating Tasks with Lambda and Python</h1>
+									<p>
+                                        This project demonstrates how to use Python and Lambda functions to automate tasks in AWS. We will create a Lambda function that triggers when a file is added to an S3 bucket and moves it to a folder with the format YYYYMMDD/filename, based on the file's creation date. Project provided by <a href="https://www.aosnote.com/products/deploy-a-dynamic-website-on-aws" target="_blank">AOSNote</a>.
+                                    </p>
+                                    <a href="https://github.com/princessjrc/python-boto3-project/tree/main" target="_blank"><b>Project Code on GitHub</b></a>
+									</header>
+								<div class="image main"><img src="images/LambdaS3Project/lambda.png" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Getting Set Up</a></li>
+                                        <li><a href="#section2">Step 2: Creating a Lambda Function Using Python that Will Trigger When a File is Added to S3 Bucket</a></li>
+                                        <li><a href="#section3">Step 3: Clean Up Resources</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                    <h2>Step 1: Getting Set Up</h2>
+                                    This project requires some installations and tools, so to begin, we will set up some things on our local computer.
+                                    <br><br>1. Install Python.
+                                    <br>2. Install Boto3. Boto3 is a Python SDK provided by AWS that allows developers to interact with AWS services programmatically.
+                                    <br>3. Create an IAM user with a programmatic access key.
+                                    <br>4. Install the AWS command line (CLI).
+                                    <br>5. Run the AWS configure command.
+                                    <p style="font-family: monospace">
+                                        aws configure</p>
+                                    6. Install Visual Studio Code.
+                                    <br>7. Install extensions (Jupyter and Pylance).
+                                    <br>8. Sign up for a GitHub account.
+                                    <br>9. Install Git.
+                                    <br>10. Generate a key pair for secure connections (Mac). This is so we can clone our GitHub repository.
+                                    <p style="font-family: monospace">
+                                        ssh-keygen -b 4096 -t rsa</p>
+                                    11. Add public SSH key to GitHub.
+                                    <p><div class="image main"><img src="images/GitHub-Actions/1.png" alt="" /></div></p>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Creating a Lambda Function Using Python that Will Trigger When a File is Added to S3 Bucket</h2>
+                                    We are going to create a Lambda function with Python that triggers when a file is added to an S3 bucket and moves it to a folder with the format YYYYMMDD/filename, based on the file's creation date.
+                                    <br><br>1. Create the S3 bucket.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/1.png" alt="" /></div></p>
+                                    2. Create a repository in GitHub that will store our Python code.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/2.png" alt="" /></div></p>
+                                    3. Clone the repository to our computer. This will create a local copy of our remote Git repository.
+                                    <p style="font-family: monospace">
+                                        git clone < ssh clone url ></p>
+                                    4. Open VS Code and add a file with a Jupyter Notebook extension (.ipynb). This is so we can run and check for any errors in each block of our code.
+                                    <br><br>5. Write Python script.
+                                    <br><br><p><a href="https://github.com/princessjrc/python-boto3-project/blob/main/organize-s3-objects/organize-s3-objects.ipynb" target="_blank"><b>Jupyter Notebook Python Script on GitHub</b></a></p>
+                                    6. Convert Jupyter Notebook code to Python format.
+                                    <br><br><p><a href="https://github.com/princessjrc/python-boto3-project/blob/main/organize-s3-objects/organize-s3-objects.py" target="_blank"><b>Python Code on GitHub</b></a></p>
+                                    7. Create another S3 bucket. We will use this bucket to store our Python code.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/3a.png" alt="" /></div></p>
+                                    8. Upload our code as a zip file so Lambda can pull the code from the bucket.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/4a.png" alt="" /></div></p>
+                                    9. Create an IAM role for the Lambda function. This is so Lambda will have access to the S3 buckets and permission to do basic execution.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/5.png" alt="" /></div></p>
+                                    10. Create the Lambda function.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/6.png" alt="" /></div></p>
+                                    11. Add an S3 trigger to the Lambda function. This will make it so anytime someone adds a file to the S3 bucket, it will trigger this function.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/7.png" alt="" /></div></p>
+                                    12. Upload the Python code to the Lambda function.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/8.png" alt="" /></div></p>
+                                    13. Update the handler settings.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/9.png" alt="" /></div></p>
+                                    14. Create a test event. This allows us to test our Python code in the Lambda function console.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/10.png" alt="" /></div></p>
+                                    We can see it ran successfully.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/11.png" alt="" /></div></p>
+                                    15. Finally, we will test whether our Lambda function is working. We will do this by uploading some files into our S3 bucket.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/12.png" alt="" /></div></p>
+                                    The function was successful.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/13.png" alt="" /></div></p> 
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Clean Up Resources</h2>
+                                    We will now clean up the resources we used in this project by deleting the Lambda function, both S3 buckets, and the IAM role.
+                                    <p><div class="image main"><img src="images/LambdaS3Project/14.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/LambdaS3Project/15.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/LambdaS3Project/16.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/LambdaS3Project/17.png" alt="" /></div></p>
+                                </section>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
