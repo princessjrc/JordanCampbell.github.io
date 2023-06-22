@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>AWS Static Website with Ansible</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a href="index.html" class=""></a>
+					</header> 
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html">Portfolio</a></li>
+							<!-- <li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<section class="post">
+								<header class="major">
+									<h1>AWS Static Website with Ansible</h1>
+									<p>
+                                        This project demonstates how to deploy a static website on AWS with Ansible. It uses AWS services (such as VPC with public and private subnets, NAT gateways, security groups, EC2, application load balancer, Certificate Manager, and Route 53), and DevOps tools (such as GitHub, Git, and Visual Studio Code). Project provided by AOSNote.
+                                    </p>
+                                    <a href="https://github.com/princessjrc/ansible-playbooks/tree/main" target="_blank"><b>Project Code on GitHub</b></a>
+									</header>
+								<div class="image main"><img src="images/Ansible/ansible.drawio.png" alt="" /></div>
+                                <nav>
+                                    <ul>
+                                        <li><a href="#section1">Step 1: Getting Set Up</a></li>
+                                        <li><a href="#section2">Step 2: Build an AWS Network VPC</a></li>
+                                        <li><a href="#section3">Step 3: Create NAT Gateways</a></li>
+                                        <li><a href="#section4">Step 4: Create the Security Groups</a></li>
+                                        <li><a href="#section5">Step 5: Create Key Pairs</a></li>
+                                        <li><a href="#section6">Step 6: Launch the Bastion Host</a></li>
+                                        <li><a href="#section7">Step 7: Add the Private Key Pair to the Ansible Server</a></li>
+                                        <li><a href="#section8">Step 8: Test the Connection Between the Ansible Server and the Webservers</a></li>
+                                        <li><a href="#section9">Step 9: Create a GitHub Repository to Store the Ansible Playbooks</a></li>
+                                        <li><a href="#section10">Step 10: Test the Connection</a></li>
+                                        <li><a href="#section11">Step 11: Create the Ansible Playbook</a></li>
+                                        <li><a href="#section12">Step 12: Create an Application Load Balancer</a></li>
+                                        <li><a href="#section13">Step 13: Register a New Domain Name in Route 53 and Create a Record Set</a></li>
+                                        <li><a href="#section14">Step 14: Register for an SSL Certificate in AWS Certificate Manager</a></li>
+                                        <li><a href="#section15">Step 15: Create an HTTPS Listener</a></li>
+                                    </ul>
+                                </nav>
+                                
+								<section id="section1">
+                                    <h2>Step 1: Getting Set Up</h2>
+                                    This project requires some initial setting up, so to begin, we will:
+                                    <br><br>1. Sign up for a GitHub account.
+                                    <br>2. Install Git on our computer.
+                                    <br>3. Install Visual Studio Code.
+                                    <br><br>
+                                </section>
+								<section id="section2">
+                                    <h2>Step 2: Build an AWS Network VPC</h2>
+                                    Building an AWS network VPC from scratch involves creating a Virtual Private Cloud (VPC) from the AWS Management Console, setting up subnets for each tier (public and private), and configuring routing tables and security groups to ensure traffic flows securely between the tiers. The VPC can then be launched with instances for each tier, and load balancers can be added for high availability and scalability.
+                                    <br><br>1. Create a new VPC using the CIDR range from our reference architecture.
+                                        <p><div class="image main"><img src="images/Ansible/1.png" alt="" /></div></p>
+                                        2. Enable DNS hostnames. Enabling DNS hostnames in an AWS VPC allows instances within the VPC to have DNS names associated with their IP addresses.
+                                        <p><div class="image "><img src="images/WordPress/4.png" width="260" height="170" alt="" /></div></p>
+                                        3. Create an Internet Gateway. The Internet Gateway is crucial for enabling internet traffic to enter and exit a VPC, allowing instances, NAT gateways, etc. within public subnets to have a public IP address and be directly accessible from the internet.
+                                        <p><div class="image main"><img src="images/Ansible/2.png" alt="" /></div></p>
+                                        4. Attach the Internet Gateway to our VPC. We can only attach one Internet Gateway to a VPC at a time.
+                                        <p><div class="image main"><img src="images/Ansible/3.png"  alt="" /></div></p>
+                                        5. Create two public subnets in two different availability zones for high availability. We will create these with different CIDR blocks, since subnets cannot have overlapping CIDR blocks.
+                                        <p><div class="image main"><img src="images/Ansible/4.png"  alt="" /></div></p>
+                                        6. Enable auto-assign public IPv4 address for both subnets.
+                                        <p><div class="image main"><img src="images/DynamicWeb/6bothsubnets.png" alt="" /></div></p>
+                                        7. Create a new public route table. When a new VPC is created, a Main route table is automatically created and associated with all subnets within the VPC. We will add a public route to our own public route table and associate our previously made public subnets with it.
+                                        <p><div class="image main"><img src="images/Ansible/5.png" alt="" /></div></p>
+                                        8. Add a public route to the table. We'll do this by adding a target for our Internet Gateway.
+                                        <p><div class="image main"><img src="images/Ansible/6.png" alt="" /></div></p>
+                                        9. Associate our previously made public subnets with the public route table.
+                                        <p><div class="image main"><img src="images/Ansible/7.png" alt="" /></div></p>
+                                        10. Lastly, we will create two private subnets that will host our app. One in Availability Zone 1 (AZ1), and one in AZ2.
+                                        <p><div class="image main"><img src="images/Ansible/8.png" alt="" /></div></p>
+                                        In a VPC, subnets can be designated as public or private based on their route table configuration. Public subnets are associated with a route table that has a route to an internet gateway, and private subnets are associated with a route table that does not have a route to an internet gateway.
+                                        <br><br><p>Subnets not associated with a route table default to the Main route table, which is private by default.</p>
+                                </section>
+                                <section id="section3">
+                                    <h2>Step 3: Create NAT Gateways</h2>
+                                    A NAT gateway allows instances in private subnets to securely access the internet or other AWS services, without needing public IP addresses or self-managed NAT.
+                                    <br><br>1. Create a NAT gateway for AZ1 and allocate an elastic IP. This provides a static IP address that does not change even if the NAT gateway is stopped or restarted, and it ensures that the IP address of the NAT gateway remains constant, making it easier to maintain connectivity and security for external communication.
+                                    <p><div class="image main"><img src="images/Ansible/a.png" alt="" /></div></p>
+                                    2. Create a private route table.
+                                    <p><div class="image main"><img src="images/Ansible/b.png" alt="" /></div></p>
+                                    3. Add a route to our NAT gateway to route traffic to the internet.
+                                    <p><div class="image main"><img src="images/Ansible/c.png" alt="" /></div></p>
+                                    4. Associate our private app subnet in AZ1 to the table. 
+                                    <p><div class="image main"><img src="images/Ansible/d.png" alt="" /></div></p>
+                                    5. Replicate steps 1-4, but this time for the subnets in AZ2.
+                                    <p><div class="image main"><img src="images/Ansible/e.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/Ansible/f.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/Ansible/g.png" alt="" /></div></p>
+                                    <p><div class="image main"><img src="images/Ansible/h.png" alt="" /></div></p>
+                                </section>
+                                <section id="section4">
+                                    <h2>Step 4: Create the Security Groups</h2>
+                                    Security groups control the inbound and outbound traffic for resources in a VPC. They use rules to allow or block traffic based on protocol, IP addresses, and ports. We will create four security groups to control inbound traffic for our webservers.
+                                    <br><br>1. Create the application load balancer security group. Inbound rules will allow access from HTTP (Port 80) and HTTPS (Port 443). We will add this security group to the application load balancer we create.
+                                    <p><div class="image main"><img src="images/Ansible/9.png" alt="" /></div></p>
+                                    2. Create the bastion host security group. Inbound rules will allow access from SSH (Port 22). We will limit this to only our IP address.
+                                    <p><div class="image main"><img src="images/Ansible/10.png" alt="" /></div></p>
+                                    3. Create the Ansible Server security group. Inbound rules will allow access from port 22, and the source will be our bastion host security group. We will add this to our Ansible Server.
+                                    <p><div class="image main"><img src="images/Ansible/11.png" alt="" /></div></p>
+                                    4. Create the webserver security group. Inbound rules will allow access from HTTP (Port 80), HTTPS (Port 443), and SSH (Port 22), and the source is our ALB and Ansible Server security groups. We will add this security group to our webservers. 
+                                    <p><div class="image main"><img src="images/Ansible/12.png" alt="" /></div></p>
+                                </section>
+                                <section id="section5">
+                                    <h2>Step 5: Create Key Pairs</h2>
+                                    Key pairs in AWS consist of a public key and a private key. The public key is used for encryption and verification, while the private key is kept secret and used for decryption and generating digital signatures.
+                                    <br><br>1. Generate a key pair using the terminal.
+                                    <p style="font-family: monospace">
+                                        ssh-keygen -t rsa</p>
+                                    2. Import the public key of our key pair into our AWS account. We will add this key pair to our webservers when we launch them.
+                                    <p><div class="image main"><img src="images/Ansible/13.png" alt="" /></div></p>
+                                    3. Upload the public key of our key pair to GitHub. This allows us to clone a GitHub repository.
+                                    <p><div class="image main"><img src="images/Ansible/14.png" alt="" /></div></p>
+                                </section>
+                                <section id="section6">
+                                    <h2>Step 6: Launch the Servers</h2>
+                                    1. Launch the bastion host in the public subnet. We will use the bastion host to connect to the Ansible Server in the private subnet.
+                                    <br><br>A bastion host is a dedicated server instance used to securely connect to other servers within a private network. It provides an additional layer of security by acting as a gateway that requires two-factor authentication and provides access control for remote connections.
+                                    <p><div class="image main"><img src="images/Ansible/15.png" alt="" /></div></p>
+                                    2. Launch the Ansible Server in the private subnet. We will use this instance to install Ansible.
+                                    <p><div class="image main"><img src="images/Ansible/16.png" alt="" /></div></p>
+                                    3. Launch the webservers in the private app subnets AZ1 and AZ2. These instances will host our website.
+                                    <p><div class="image main"><img src="images/Ansible/17.png" alt="" /></div></p>
+                                </section>
+                                <section id="section7">
+                                    <h2>Step 7: Add the Private Key Pair to the Ansible Server</h2>
+                                    1. Add the private key pair to the Ansible Server. This will allow the server to connect to our webservers.
+                                    <br><br>First, let's SSH into the bastion host (Mac users).
+                                    <p style="font-family: monospace">
+                                        ssh-add --apple-use-keychain < key pair >
+                                        <br><br>ssh -A ec2-user@< public ip address >
+                                    </p>
+                                    2. From here we can SSH into the Ansible Server in the private subnet.
+                                    <p style="font-family: monospace">
+                                        ssh ubuntu@< private ip address >
+                                    </p>
+                                    3. Download security patches and updates.
+                                    <p style="font-family: monospace">
+                                        sudo apt-get update
+                                    </p>
+                                    <p style="font-family: monospace">
+                                        sudo apt-get upgrade
+                                    </p>
+                                    4. Add the private key of the key pair we created on our computer to this Ubuntu server. 
+                                    <p style="font-family: monospace">
+                                        cd .ssh
+                                        <br><br>sudo vi id_rsa
+                                    </p>
+                                    Insert the private key into the file and save.
+                                    <br><br>
+                                </section>
+                                <section id="section8">
+                                    <h2>Step 8: Test the Connection Between the Ansible Server and the Webservers</h2>
+                                    1. SSH into the webserver in availability zone 1 from the Ansible Server.
+                                    <p style="font-family: monospace">
+                                        ssh ec2-user@< private ip address >
+                                    </p>
+                                    2. Paste the following commands once we have connected to the webserver:
+                                    <p style="font-family: monospace">
+                                        sudo yum update -y
+                                        <br>sudo yum -y install python-pip
+                                        <br>sudo pip install boto3
+                                    </p>
+                                    3. Repeat these steps for the webserver in availability zone 2.
+                                    <br><br>
+                                </section>
+                                <section id="section9">
+                                    <h2>Step 9: Create a GitHub Repository to Store the Ansible Playbooks</h2>
+                                    GitHub repositories are storage spaces where we can store and manage our code, collaborate with others, and track changes using Git version control. Each repository contains files, branches, and commit history.
+                                    <br><br>1. Create the repository.
+                                    <p><div class="image main"><img src="images/Ansible/18.png" alt="" /></div></p>
+                                    2. Clone the GitHub repository on the Ansible Server. The server will use the playbooks in the repository to configure our webserver.
+                                    <p style="font-family: monospace">
+                                        git clone < ssh clone url >
+                                    </p>
+                                    3. Clone the GitHub repository on our computer. We can work on our playbook easily from our own computer.
+                                    <br><br>
+                                </section>
+                                <section id="section10">
+                                    <h2>Step 10: Test the Connection</h2>
+                                    1. Install Ansible on the Ansible Server.
+                                    <br><br>Ansible is an open-source automation tool used for configuration management, application deployment, and orchestration. It allows you to define and manage infrastructure as code using YAML-based playbooks.
+                                    <br><br>After we SSH into the Ansible Server, we will install Ansible by running these commands:
+                                    <p style="font-family: monospace">
+                                        sudo apt update
+                                        <br>sudo apt upgrade
+                                        <br>sudo apt install software-properties-common -y
+                                        <br>sudo apt install ansible -y
+                                        <br>ansible --version
+                                    </p>
+                                    2. Create the Ansible inventory file.
+                                    <br><br><a href="https://github.com/princessjrc/ansible-playbooks/blob/main/inventory" target="_blank"><b>Inventory File</b></a>
+                                    <br><br>For the Ansible Server to know which webservers to connect to, we will list the private IP addresses of those servers in the inventory file. Then we need to push it to the repository on the Ansible Server.
+                                    <br><br>3. Use Ansible to ping the webservers to test connection. Change directory to the Ansible Playbook directory and run this command:
+                                    <p style="font-family: monospace">
+                                        ansible all --key-file ~/.ssh/id_rsa -i inventory -m ping -u ec2-user
+                                    </p>
+                                    4. Create the Ansible config file.
+                                    <br><br>Some of the flags we specify in this command will always be the same, such as our key file, inventory file, and the username of our server. So instead of typing these every time we want to run an Ansible command, we can create an Ansible configuration file and store these flags there as defaults.
+                                    <br><br><a href="https://github.com/princessjrc/ansible-playbooks/blob/main/ansible.cfg" target="_blank"><b>Ansible Config File</b></a>
+                                    <br><br>5. Once we have pulled this file to the repository on the Ansible Server, we can run this command:
+                                    <p style="font-family: monospace">
+                                        ansible all -m ping
+                                    </p>
+                                </section>
+                                <section id="section11">
+                                    <h2>Step 11: Create the Ansible Playbook</h2>
+                                    We will now write the Ansible Playbook to install our website on the webservers. An Ansible Playbook is a YAML format file that contains all the commands we want Ansible to run on the webservers to install our website.
+                                    <br><br>1. Create the Playbook.
+                                    <br><br><a href="https://github.com/princessjrc/ansible-playbooks/blob/main/deploy-website.yml" target="_blank"><b>Ansible Playbook</b></a>
+                                    <br><br>2. Pull the new Playbook file into our repository on the Ansible Server.
+                                    <p style="font-family: monospace">
+                                        git pull
+                                    </p>
+                                    3. Run the Playbook to install our website on our webservers.
+                                    <p style="font-family: monospace">
+                                        ansible-playbook deploy-website.yml
+                                    </p>
+                                    The benefit of using Ansible to configure our EC2 instances is that it is more efficient to install a website on many instances as opposed to doing it manually.
+                                </section>
+                                <section id="section12">
+                                    <h2>Step 12: Create an Application Load Balancer</h2>
+                                    An Application Load Balancer (ALB) is a service that routes incoming traffic to multiple targets based on the content of the request, such as the URL or HTTP header. ALBs operate at the application layer (Layer 7) and support features like SSL/TLS termination, health checks, and content-based routing.
+                                    <br><br>1. Create a target group. To access the website we installed on the EC2 instances, we will put them in the target group to allow the ALB to route traffic to them.
+                                    <p><div class="image main"><img src="images/Ansible/19.png" alt="" /></div></p>
+                                    2. Create the application load balancer.
+                                    <p><div class="image main"><img src="images/Ansible/20.png" alt="" /></div></p>
+                                    3. Use the ALB DNS name to access our website.
+                                    <p><div class="image main"><img src="images/Ansible/21.png" alt="" /></div></p>
+                                </section>
+                                <section id="section13">
+                                    <h2>Step 13: Register a New Domain Name in Route 53 and Create a Record Set</h2>
+                                    We will create a domain name for our website and use Route 53 as a service that helps people find that website on the internet. It will ensure that people can access the website easily and reliably.
+                                    <br><br>1. Create a domain name.
+                                    <p><div class="image main"><img src="images/StaticWebsite/33.png" alt="" /></div></p>
+                                    2. Create a record. Creating a Route 53 alias record for an Application Load Balancer involves mapping the website or application's domain name to the ALB. This directs traffic to the targets behind the ALB. The user must specify the DNS name of the ALB and routing policy when creating the alias record.
+                                    <p><div class="image main"><img src="images/Ansible/22.png" alt="" /></div></p>
+                                </section>
+                                <section id="section14">
+                                    <h2>Step 14: Register for an SSL Certificate in AWS Certificate Manager</h2>
+                                    We will use an SSL Certificate to encrypt all communications between the web browser and our webservers. This is also referred to as encryption in transit.
+                                    <br><br>1. Create a public SSL Certificate in AWS Certificate Manager.
+                                    <p><div class="image main"><img src="images/StaticWebsite/37.png" alt="" /></div></p>
+                                    2. Create DNS records in Amazon Route 53. This is a validation process designed to ensure that only the domain owner can obtain the SSL certificate.
+                                    <p><div class="image main"><img src="images/StaticWebsite/38.png" alt="" /></div></p>
+                                    Our certificate is good to go.
+                                    <p><div class="image main"><img src="images/StaticWebsite/39.png" alt="" /></div></p>
+                                </section>
+                                <section id="section15">
+                                    <h2>Step 15: Create an HTTPS Listener</h2>
+                                    Using the SSL Certificate we just registered, we will secure our website. We will create an HTTPS (SSL) listener for our ALB. This involves configuring the ALB to handle SSL/TLS encryption for incoming requests and requires associating the SSL certificate we created with the ALB's listener configuration. Once configured, the ALB can decrypt and forward incoming HTTPS requests to the appropriate backend target group.
+                                    <br><br>1. Add listener.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/76.png" alt="" /></div></p>
+                                    2. Redirect traffic to the HTTPS listener from the HTTP listener.
+                                    <p><div class="image main"><img src="images/DynamicWeb2/77.png" alt="" /></div></p>
+                                    3. Check that our website is accessible from our domain name.
+                                    <p><div class="image main"><img src="images/Ansible/24.png" alt="" /></div></p>
+                                </section>
+                                </section>
+                                <h2><center>Project Complete!</center></h2>
+                            
+                            <footer>
+                                <p><center><a href="#top">Back to Top</a></center></p>
+                            </footer>
+                        </section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section class="split contact">
+							<section class="alt">
+								<h3>Location</h3>
+								<p>Rockledge, FL 32955</p>
+							</section>
+							<section>
+								<h3>Phone</h3>
+								<p>(321) 987-1088</p>
+							</section>
+							<section>
+								<h3>Email</h3>
+								<p>campbell.r.jordan@gmail.com</p>
+							</section>
+							<section>
+								<h3>Social</h3>
+								<ul class="icons alt">
+									<li><a href="https://www.linkedin.com/in/jordan-campbell-viera/" target="_blank" class="icon brands alt fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="https://github.com/princessjrc" target="_blank" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+								</ul>
+							</section>
+						</section>
+					</footer>
+								
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
